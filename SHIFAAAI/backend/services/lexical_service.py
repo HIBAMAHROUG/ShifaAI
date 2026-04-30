@@ -1,0 +1,1 @@
+# Lexical service for SHIFAAAI
