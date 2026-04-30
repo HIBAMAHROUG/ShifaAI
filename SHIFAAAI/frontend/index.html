@@ -1,608 +1,638 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ShifaaAI | Analyse intelligente des symptômes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShifaaAI - Analyse Médicale Avancée</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        body {
+            background: #0a0a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        /* Navbar - BIEN VISIBLE */
+        .navbar {
+            background: #0d0d2b;
+            border-bottom: 2px solid #ff6b35;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+        .navbar-brand {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ff6b35 !important;
+        }
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        .navbar-brand i {
+            color: #ff6b35;
+        }
 
-    body {
-      background: linear-gradient(135deg, #0f172a 0%, #0a0f1d 100%);
-      color: #ffffff;
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-    }
+        .badge-version {
+            background: #ff6b35;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-    /* Scrollbar personnalisée */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 50px 20px 30px;
+            background: linear-gradient(135deg, #0a0a1a, #1a1a3a);
+        }
 
-    ::-webkit-scrollbar-track {
-      background: #1e293b;
-    }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
 
-    ::-webkit-scrollbar-thumb {
-      background: #8b5cf6;
-      border-radius: 10px;
-    }
+        .hero h1 span {
+            color: #ff6b35;
+        }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #7c3aed;
-    }
+        .hero p {
+            color: #b0b0d0;
+            font-size: 18px;
+        }
 
-    /* Navbar améliorée */
-    .navbar {
-      background: rgba(17, 24, 39, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 16px 40px;
-      transition: all 0.3s ease;
-      border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-    }
+        /* Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
 
-    .navbar-brand {
-      background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent !important;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
+        /* Carte d'entrée */
+        .input-card {
+            background: #14142b;
+            border-radius: 24px;
+            border: 2px solid #ff6b35;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+        }
 
-    .navbar-brand i {
-      background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-right: 8px;
-    }
+        .input-label {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+        }
 
-    .nav-link {
-      color: #cbd5e1 !important;
-      margin-left: 28px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      position: relative;
-    }
+        .input-label i {
+            color: #ff6b35;
+            font-size: 28px;
+        }
 
-    .nav-link:hover {
-      color: #8b5cf6 !important;
-    }
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            background: #1e1e3a;
+            border: 2px solid #2a2a4a;
+            border-radius: 16px;
+            padding: 18px;
+            color: #ffffff;
+            font-size: 16px;
+            resize: vertical;
+            transition: all 0.3s;
+        }
 
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #8b5cf6, #c4b5fd);
-      transition: width 0.3s ease;
-    }
+        textarea:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+        }
 
-    .nav-link:hover::after {
-      width: 60%;
-    }
+        textarea::placeholder {
+            color: #6a6a8a;
+        }
 
-    /* Hero section */
-    .hero {
-      min-height: 85vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 60px 20px;
-      position: relative;
-      overflow: hidden;
-    }
+        .analyze-btn {
+            background: #ff6b35;
+            border: none;
+            padding: 14px 42px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+        }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.08), transparent 50%);
-      pointer-events: none;
-    }
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            background: #ff8c5a;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+        }
 
-    .hero-content {
-      max-width: 900px;
-      animation: fadeInUp 0.8s ease;
-    }
+        /* Section Titles - TRÈS VISIBLES */
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #ff6b35;
+            display: inline-block;
+            color: #ffffff;
+        }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        .section-title i {
+            color: #ff6b35;
+            margin-right: 12px;
+        }
 
-    .hero h1 {
-      font-size: 60px;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, #ffffff, #cbd5e1);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+        /* Cartes de résultats */
+        .result-card {
+            background: #14142b;
+            border-radius: 24px;
+            border: 1px solid #2a2a4a;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
 
-    .hero span {
-      background: linear-gradient(135deg, #8b5cf6, #c4b5fd);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+        /* Tokens Grid */
+        .token-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #0d0d20;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
 
-    .hero p {
-      color: #94a3b8;
-      font-size: 18px;
-      line-height: 1.6;
-      margin-bottom: 40px;
-    }
+        .token-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
-    /* Input Box - Glassmorphism */
-    .input-box {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(12px);
-      padding: 32px;
-      border-radius: 28px;
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(139, 92, 246, 0.1);
-      transition: all 0.3s ease;
-    }
+        .token-badge:hover {
+            transform: translateY(-3px) scale(1.03);
+        }
 
-    .input-box:hover {
-      border-color: rgba(139, 92, 246, 0.6);
-      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(139, 92, 246, 0.2);
-    }
+        .badge-symptom { background: linear-gradient(135deg, #ff6b35, #ffaa44); color: #000; box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4); }
+        .badge-negation { background: linear-gradient(135deg, #ff4444, #cc0000); color: white; }
+        .badge-intensifier { background: linear-gradient(135deg, #ffaa44, #ff8800); color: #000; }
+        .badge-number { background: linear-gradient(135deg, #44ff88, #00cc55); color: #000; }
+        .badge-time { background: linear-gradient(135deg, #44aaff, #0088cc); color: #000; }
+        .badge-default { background: #2a2a4a; color: #c0c0e0; border: 1px solid #4a4a6a; }
 
-    textarea {
-      width: 100%;
-      height: 160px;
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid #334155;
-      border-radius: 20px;
-      padding: 18px 22px;
-      color: #f1f5f9;
-      resize: none;
-      outline: none;
-      font-size: 16px;
-      font-family: 'Inter', monospace;
-      transition: all 0.3s ease;
-    }
+        /* Stat Cards - TRÈS VISIBLES */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
 
-    textarea:focus {
-      border-color: #8b5cf6;
-      background: rgba(30, 41, 59, 1);
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-    }
+        .stat-card {
+            background: #0d0d20;
+            border-radius: 20px;
+            padding: 22px;
+            text-align: center;
+            border: 2px solid #2a2a4a;
+            transition: all 0.2s;
+        }
 
-    textarea::placeholder {
-      color: #64748b;
-      font-family: 'Inter', sans-serif;
-    }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff6b35;
+        }
 
-    .analyze-btn {
-      margin-top: 25px;
-      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-      border: none;
-      padding: 14px 45px;
-      border-radius: 40px;
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-    }
+        .stat-number {
+            font-size: 42px;
+            font-weight: 800;
+            color: #ff6b35;
+            line-height: 1;
+        }
 
-    .analyze-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-      background: linear-gradient(135deg, #7c3aed, #6d28d9);
-    }
+        .stat-label {
+            font-size: 14px;
+            color: #b0b0d0;
+            margin-top: 10px;
+            font-weight: 600;
+        }
 
-    .analyze-btn:active {
-      transform: translateY(1px);
-    }
+        /* Syntax Table - BIEN VISIBLE */
+        .syntax-table-container {
+            max-height: 450px;
+            overflow-y: auto;
+            background: #0d0d20;
+            border-radius: 16px;
+            padding: 5px;
+        }
 
-    /* Features section */
-    .features {
-      padding: 80px 20px;
-    }
+        .syntax-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    .section-title {
-      text-align: center;
-      margin-bottom: 60px;
-    }
+        .syntax-table th {
+            text-align: left;
+            padding: 15px 12px;
+            color: #ffaa44;
+            font-weight: 700;
+            font-size: 15px;
+            border-bottom: 2px solid #ff6b35;
+            background: #0d0d20;
+            position: sticky;
+            top: 0;
+        }
 
-    .section-title h2 {
-      font-size: 42px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #ffffff, #cbd5e1);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 16px;
-    }
+        .syntax-table td {
+            padding: 12px;
+            border-bottom: 1px solid #2a2a4a;
+            color: #e0e0ff;
+        }
 
-    .section-title p {
-      color: #94a3b8;
-      font-size: 18px;
-    }
+        .syntax-table tr:hover td {
+            background: rgba(255, 107, 53, 0.15);
+        }
 
-    .card-feature {
-      background: rgba(17, 24, 39, 0.6);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(139, 92, 246, 0.2);
-      border-radius: 24px;
-      padding: 40px 28px;
-      text-align: center;
-      transition: all 0.4s ease;
-      height: 100%;
-    }
+        .pos-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+        .pos-verb { background: #ff4444; }
+        .pos-noun { background: #44aaff; }
+        .pos-det { background: #aa44ff; }
+        .pos-prep { background: #44ffaa; color: #000; }
+        .pos-default { background: #6666aa; }
 
-    .card-feature:hover {
-      transform: translateY(-10px);
-      border-color: rgba(139, 92, 246, 0.5);
-      background: rgba(17, 24, 39, 0.8);
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
-    }
+        /* Syntax Tree */
+        .syntax-tree {
+            background: #0d0d20;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #3a3a5a;
+        }
 
-    .card-feature i {
-      font-size: 50px;
-      background: linear-gradient(135deg, #8b5cf6, #c4b5fd);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 25px;
-    }
+        .syntax-tree pre {
+            color: #44ffaa;
+            margin: 0;
+            font-size: 14px;
+            font-family: monospace;
+        }
 
-    .card-feature h4 {
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 15px;
-      color: #f1f5f9;
-    }
+        /* Main Result - TRÈS VISIBLE */
+        .main-result {
+            background: linear-gradient(135deg, #1a1a3a, #0d0d2b);
+            border-radius: 28px;
+            padding: 35px;
+            text-align: center;
+            border: 2px solid #ff6b35;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
 
-    .card-feature p {
-      color: #94a3b8;
-      line-height: 1.6;
-    }
+        .disease-icon {
+            font-size: 70px;
+            color: #ff6b35;
+        }
 
-    /* How it works section */
-    .how-it-works {
-      padding: 60px 20px 80px;
-      background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.05));
-    }
+        .disease-name {
+            font-size: 38px;
+            font-weight: 800;
+            color: #ffaa44;
+            margin: 16px 0;
+        }
 
-    .step {
-      text-align: center;
-      padding: 20px;
-    }
+        .confidence-container {
+            max-width: 450px;
+            margin: 25px auto;
+        }
 
-    .step-circle {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 28px;
-      font-weight: 700;
-      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
-    }
+        .confidence-bar {
+            height: 16px;
+            background: #2a2a4a;
+            border-radius: 20px;
+            overflow: hidden;
+        }
 
-    .step h4 {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #ffaa44);
+            border-radius: 20px;
+            transition: width 0.8s ease;
+        }
 
-    .step p {
-      color: #94a3b8;
-      font-size: 14px;
-    }
+        .recommendation-box {
+            background: #0d0d20;
+            border-left: 5px solid #44ffaa;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-top: 28px;
+            text-align: left;
+        }
 
-    /* Footer */
-    footer {
-      background: rgba(17, 24, 39, 0.95);
-      border-top: 1px solid rgba(139, 92, 246, 0.2);
-      padding: 50px 20px 30px;
-      margin-top: 60px;
-    }
+        .recommendation-box strong {
+            color: #44ffaa;
+            font-size: 16px;
+        }
 
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 30px;
-      margin-bottom: 40px;
-    }
+        .recommendation-box p {
+            color: #e0e0ff;
+            margin-top: 8px;
+            font-size: 15px;
+        }
 
-    .footer-logo h3 {
-      font-size: 24px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+        /* Spinner */
+        .spinner-container {
+            text-align: center;
+            padding: 60px;
+        }
+        .spinner-custom {
+            width: 70px;
+            height: 70px;
+            border: 4px solid #2a2a4a;
+            border-top-color: #ff6b35;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-    .footer-logo p {
-      color: #64748b;
-      font-size: 14px;
-      margin-top: 10px;
-    }
+        .alert {
+            background: #2a1a1a;
+            border: 2px solid #ff4444;
+            color: #ff8888;
+            border-radius: 16px;
+            padding: 16px;
+            font-weight: 600;
+        }
 
-    .footer-links {
-      display: flex;
-      gap: 60px;
-      flex-wrap: wrap;
-    }
+        footer {
+            text-align: center;
+            padding: 35px;
+            border-top: 1px solid #2a2a4a;
+            margin-top: 50px;
+            color: #8888aa;
+        }
 
-    .footer-links h4 {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 15px;
-      color: #cbd5e1;
-    }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .disease-name { font-size: 24px; }
+            .stat-number { font-size: 32px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
 
-    .footer-links ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .footer-links li {
-      margin-bottom: 8px;
-    }
-
-    .footer-links a {
-      color: #94a3b8;
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.3s ease;
-    }
-
-    .footer-links a:hover {
-      color: #8b5cf6;
-    }
-
-    .footer-bottom {
-      text-align: center;
-      padding-top: 30px;
-      border-top: 1px solid rgba(148, 163, 184, 0.1);
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .navbar {
-        padding: 12px 20px;
-      }
-
-      .hero h1 {
-        font-size: 36px;
-      }
-
-      .hero p {
-        font-size: 16px;
-      }
-
-      .section-title h2 {
-        font-size: 32px;
-      }
-
-      .footer-content {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .footer-links {
-        justify-content: center;
-      }
-
-      .nav-link::after {
-        display: none;
-      }
-    }
-  </style>
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #1a1a3a; }
+        ::-webkit-scrollbar-thumb { background: #ff6b35; border-radius: 10px; }
+    </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <i class="fa-solid fa-heart-pulse"></i>
-        ShifaaAI
-      </a>
-      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="#">Accueil</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Analyse</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Pipeline IA</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-heart-pulse"></i> ShifaaAI
+            </a>
+            <span class="badge-version">NLP v3.0 • IA Médicale</span>
+        </div>
+    </nav>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>
-        Analyse intelligente des<br>
-        <span>symptômes</span>
-      </h1>
-      <p>
-        ShifaaAI utilise le NLP et l'intelligence artificielle<br>
-        pour comprendre les symptômes en langage naturel<br>
-        et prédire les maladies probables.
-      </p>
-      <div class="input-box">
-        <textarea placeholder="Exemple : J'ai une forte fièvre, une toux sèche et des douleurs à la gorge..."></textarea>
-        <button class="analyze-btn">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          Analyser
-        </button>
-      </div>
+    <!-- Hero -->
+    <div class="hero">
+        <div class="container">
+            <h1>Analyse médicale <span>intelligente</span></h1>
+            <p>Décrivez vos symptômes en langage naturel - Notre IA analyse, tokenise et prédit</p>
+        </div>
     </div>
-  </section>
 
-  <!-- Features -->
-  <section class="features container">
-    <div class="section-title">
-      <h2>Fonctionnalités IA</h2>
-      <p>Technologies avancées pour une analyse précise</p>
-    </div>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card-feature">
-          <i class="fa-solid fa-brain"></i>
-          <h4>Analyse Lexicale</h4>
-          <p>Découpage intelligent des phrases et extraction des tokens médicaux avec traitement sémantique avancé.</p>
+    <div class="main-container">
+        <!-- Input Card -->
+        <div class="input-card">
+            <div class="input-label">
+                <i class="fas fa-notes-medical"></i>
+                <span>📝 Saisissez vos symptômes</span>
+            </div>
+            <textarea id="symptomInput" placeholder="Exemple : Je tousse depuis une semaine, j'ai du mal à respirer et une douleur dans la poitrine..."></textarea>
+            <div class="text-center mt-4">
+                <button class="analyze-btn" id="analyzeBtn">
+                    <i class="fas fa-microscope"></i> Lancer l'analyse IA
+                </button>
+            </div>
         </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card-feature">
-          <i class="fa-solid fa-code-branch"></i>
-          <h4>Analyse Syntaxique</h4>
-          <p>Compréhension grammaticale et relations contextuelles entre les symptômes exprimés.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card-feature">
-          <i class="fa-solid fa-virus"></i>
-          <h4>Prédiction Maladies</h4>
-          <p>Génération des maladies probables avec score de confiance IA basé sur les données cliniques.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- How it works -->
-  <section class="how-it-works">
-    <div class="container">
-      <div class="section-title">
-        <h2>Comment ça marche ?</h2>
-        <p>Un processus simple et rapide</p>
-      </div>
-      <div class="row g-4">
-        <div class="col-md-3">
-          <div class="step">
-            <div class="step-circle">1</div>
-            <h4>Saisie des symptômes</h4>
-            <p>Décrivez vos symptômes en langage naturel dans l'interface</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="step">
-            <div class="step-circle">2</div>
-            <h4>Analyse NLP</h4>
-            <p>Notre IA analyse et structure les informations médicales</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="step">
-            <div class="step-circle">3</div>
-            <h4>Prédiction</h4>
-            <p>Génération des maladies potentielles avec scores de confiance</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="step">
-            <div class="step-circle">4</div>
-            <h4>Recommandations</h4>
-            <p>Obtenez des conseils médicaux préliminaires</p>
-          </div>
-        </div>
-      </div>
+        <div id="resultsContainer"></div>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-content">
-      <div class="footer-logo">
-        <h3><i class="fa-solid fa-heart-pulse"></i> ShifaaAI</h3>
-        <p>Analyse médicale par intelligence artificielle</p>
-      </div>
-      <div class="footer-links">
-        <div>
-          <h4>Plateforme</h4>
-          <ul>
-            <li><a href="#">Accueil</a></li>
-            <li><a href="#">Analyse</a></li>
-            <li><a href="#">Pipeline IA</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Ressources</h4>
-          <ul>
-            <li><a href="#">Documentation</a></li>
-            <li><a href="#">API</a></li>
-            <li><a href="#">Support</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Légal</h4>
-          <ul>
-            <li><a href="#">Confidentialité</a></li>
-            <li><a href="#">Conditions</a></li>
-            <li><a href="#">Mentions légales</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      © 2026 ShifaaAI — AI Medical NLP Platform. Tous droits réservés.
-    </div>
-  </footer>
+    <footer>
+        <p>⚠️ Avertissement médical : Cette analyse est assistée par IA et ne remplace pas un avis médical professionnel.</p>
+        <p>© 2026 ShifaaAI - Intelligence Artificielle pour la Santé</p>
+    </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/analysis.js"></script>
-<script src="js/api.js"></script>
-<script src="js/analysis.js"></script>
-<script src="js/pipeline.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/app.js"></script>
-  <script src="components/navbar.js"></script>
-  <script src="components/symptomForm.js"></script>
-  <script src="components/lexicalView.js"></script>
-  <script src="components/syntaxView.js"></script>
-  <script src="components/diseaseCard.js"></script>
-  <script src="components/pipelineView.js"></script>
+    <script>
+        // ============================================================
+        // DICTIONNAIRES MÉDICAUX
+        // ============================================================
+        
+        const SYMPTOMS = new Set([
+            'fièvre', 'fievre', 'frissons', 'sueurs', 'toux', 'tousse', 'tousser', 
+            'essoufflement', 'respiration', 'respirer', 'gorge', 'nez', 'rhume', 
+            'douleur', 'douleurs', 'mal', 'maux', 'courbature', 'courbatures',
+            'migraine', 'céphalée', 'tête', 'tete', 'nausée', 'nausee', 'vomissement',
+            'diarrhée', 'diarrhee', 'poitrine', 'ventre', 'fatigue', 'épuisement',
+            'vertige', 'étourdissement', 'palpitation'
+        ]);
+
+        const NEGATIONS = new Set(['pas', 'ne', 'non', 'jamais', 'plus', 'aucun', 'aucune', 'sans']);
+        const INTENSIFIERS = new Set(['très', 'beaucoup', 'extrêmement', 'trop', 'fort', 'forte', 'intense', 'léger', 'légèrement', 'assez', 'peu']);
+        const TEMPS = new Set(['depuis', 'pendant', 'hier', 'aujourdhui', 'maintenant', 'récemment']);
+        const VERBES = new Set(['ai', 'est', 'suis', 'a', 'avoir', 'être', 'ressens', 'tousse', 'respire', 'gratte', 'souffre']);
+        const DET = new Set(['le', 'la', 'les', 'un', 'une', 'des', 'du', 'de']);
+
+        function normalize(text) {
+            const accents = {'é':'e','è':'e','ê':'e','ë':'e','à':'a','â':'a','ä':'a','ô':'o','ö':'o','ù':'u','û':'u','ü':'u','î':'i','ï':'i','ç':'c'};
+            let r = text.toLowerCase();
+            for (let [a,b] of Object.entries(accents)) r = r.replace(new RegExp(a,'g'), b);
+            return r;
+        }
+
+        function cleanWord(w) { return w.toLowerCase().replace(/[.,;:!?()\[\]{}\'\"„”«»]/g, ''); }
+
+        function analyzeLexical(text) {
+            const words = text.split(/\s+/);
+            const tokens = [];
+            let s=0, n=0, i=0, t=0;
+            for (let word of words) {
+                const c = cleanWord(word);
+                const norm = normalize(c);
+                let type = 'MOT';
+                if (SYMPTOMS.has(norm)) { type = 'SYMPTÔME'; s++; }
+                else if (NEGATIONS.has(norm)) { type = 'NÉGATION'; n++; }
+                else if (INTENSIFIERS.has(norm)) { type = 'INTENSIFICATEUR'; i++; }
+                else if (TEMPS.has(norm)) { type = 'TEMPS'; t++; }
+                else if (norm.match(/^\d+$/)) { type = 'NOMBRE'; }
+                tokens.push({ word, type });
+            }
+            return { tokens, symptoms: s, negations: n, intensifiers: i, timeExpr: t, total: tokens.length };
+        }
+
+        function analyzeSyntax(tokens) {
+            return tokens.map(({word}) => {
+                const c = cleanWord(word);
+                const norm = normalize(c);
+                let pos = 'MOT', role = '—';
+                if (VERBES.has(norm)) { pos = 'VERBE'; role = 'action principale'; }
+                else if (DET.has(norm)) { pos = 'DÉTERMINANT'; role = 'détermine le nom'; }
+                else if (SYMPTOMS.has(norm)) { pos = 'NOM'; role = 'symptôme détecté'; }
+                return { word, pos, role };
+            });
+        }
+
+        function buildTree(tokens, syntax) {
+            let tree = '📄 Phrase analysée :\n';
+            let clause = [];
+            for (let i = 0; i < tokens.length; i++) {
+                clause.push(tokens[i].word);
+                if (syntax[i].pos === 'VERBE' || i === tokens.length-1) {
+                    if (clause.length) tree += `└─ ${clause.join(' ')}\n`;
+                    clause = [];
+                }
+            }
+            return tree;
+        }
+
+        function predictDisease(text, lexical) {
+            const symps = lexical.tokens.filter(t=>t.type==='SYMPTÔME').map(t=>normalize(cleanWord(t.word)));
+            if (symps.includes('toux') && (symps.includes('respiration') || text.toLowerCase().includes('respirer')))
+                return { disease: '🫁 Bronchite / Infection respiratoire', confidence: 85 };
+            if (symps.includes('fievre') && symps.includes('toux'))
+                return { disease: '🦠 Grippe (Influenza)', confidence: 87 };
+            if (symps.includes('gorge'))
+                return { disease: '😷 Angine / Pharyngite', confidence: 79 };
+            if (symps.includes('nausee') || symps.includes('vomissement'))
+                return { disease: '🤢 Gastro-entérite', confidence: 83 };
+            if (lexical.symptoms === 0) return { disease: '❓ Aucun symptôme identifié', confidence: 20 };
+            return { disease: '🔍 Consultation médicale recommandée', confidence: 55 };
+        }
+
+        function getReco(disease) {
+            if (disease.includes('Bronchite')) return 'Repos, hydratation abondante. Évitez la fumée. Consultez si difficultés respiratoires.';
+            if (disease.includes('Grippe')) return 'Repos, paracétamol si fièvre. Consultez si fièvre > 3 jours.';
+            if (disease.includes('Angine')) return 'Gargarismes à l\'eau salée. Consultez si douleur intense ou fièvre.';
+            if (disease.includes('Gastro')) return 'Hydratation essentielle. Évitez produits laitiers. Consultez si déshydratation.';
+            return 'Consultez un médecin pour un diagnostic précis.';
+        }
+
+        function renderTokens(tokens) {
+            return tokens.map(t => {
+                let cls = 'badge-default', icon = 'fa-tag';
+                if (t.type === 'SYMPTÔME') { cls = 'badge-symptom'; icon = 'fa-stethoscope'; }
+                else if (t.type === 'NÉGATION') { cls = 'badge-negation'; icon = 'fa-ban'; }
+                else if (t.type === 'INTENSIFICATEUR') { cls = 'badge-intensifier'; icon = 'fa-arrow-up'; }
+                else if (t.type === 'NOMBRE') { cls = 'badge-number'; icon = 'fa-hashtag'; }
+                else if (t.type === 'TEMPS') { cls = 'badge-time'; icon = 'fa-clock'; }
+                return `<span class="token-badge ${cls}"><i class="fas ${icon}"></i> ${t.word} <span style="font-size:10px; opacity:0.8;">[${t.type}]</span></span>`;
+            }).join('');
+        }
+
+        function displayResults(lexical, syntax, prediction, tree) {
+            const html = `
+                <div class="result-card">
+                    <div class="section-title"><i class="fas fa-tags"></i> 1️⃣ ANALYSE LEXICALE (TOKENISATION)</div>
+                    <div class="token-grid">${renderTokens(lexical.tokens)}</div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-number">${lexical.total}</div><div class="stat-label">📊 Tokens</div></div>
+                        <div class="stat-card"><div class="stat-number" style="color:#ffaa44;">${lexical.symptoms}</div><div class="stat-label">🩺 Symptômes</div></div>
+                        <div class="stat-card"><div class="stat-number" style="color:#ff6666;">${lexical.negations}</div><div class="stat-label">🚫 Négations</div></div>
+                        <div class="stat-card"><div class="stat-number" style="color:#ffaa44;">${lexical.intensifiers}</div><div class="stat-label">⚡ Intensifs</div></div>
+                        <div class="stat-card"><div class="stat-number" style="color:#44aaff;">${lexical.timeExpr}</div><div class="stat-label">⏱️ Temps</div></div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="section-title"><i class="fas fa-diagram-project"></i> 2️⃣ ANALYSE SYNTAXIQUE (POS TAGGING)</div>
+                    <div class="syntax-table-container">
+                        <table class="syntax-table">
+                            <thead><tr><th>📖 Mot</th><th>🏷️ Tag POS</th><th>📌 Fonction</th></tr></thead>
+                            <tbody>${syntax.map(s => `<tr><td><strong style="color:#ffaa44;">${s.word}</strong></td><td><span class="pos-tag ${s.pos==='VERBE'?'pos-verb':s.pos==='NOM'?'pos-noun':s.pos==='DÉTERMINANT'?'pos-det':'pos-default'}">${s.pos}</span></td><td style="color:#aaaaff;">${s.role}</td></tr>`).join('')}</tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="section-title"><i class="fas fa-code-branch"></i> 3️⃣ STRUCTURE DE LA PHRASE</div>
+                    <div class="syntax-tree"><pre style="color:#44ffaa; margin:0;">${tree}</pre></div>
+                </div>
+
+                <div class="main-result">
+                    <div class="disease-icon"><i class="fas fa-stethoscope"></i></div>
+                    <div class="disease-name">${prediction.disease}</div>
+                    <div class="confidence-container">
+                        <div class="d-flex justify-content-between mb-2"><span style="font-size:16px;">🎯 Score de confiance</span><strong style="color:#ffaa44; font-size:20px;">${prediction.confidence}%</strong></div>
+                        <div class="confidence-bar"><div class="confidence-fill" style="width: ${prediction.confidence}%"></div></div>
+                    </div>
+                    <div class="recommendation-box">
+                        <strong><i class="fas fa-notes-medical"></i> RECOMMANDATION MÉDICALE</strong>
+                        <p>${getReco(prediction.disease)}</p>
+                    </div>
+                    <div class="mt-3 small" style="color:#8888aa;">
+                        Analyse basée sur ${lexical.symptoms} symptôme(s) détecté(s) sur ${lexical.total} mots analysés
+                    </div>
+                </div>
+            `;
+            document.getElementById('resultsContainer').innerHTML = html;
+        }
+
+        async function analyze() {
+            const text = document.getElementById('symptomInput').value.trim();
+            if (!text) { document.getElementById('resultsContainer').innerHTML = `<div class="alert">⚠️ Veuillez saisir vos symptômes.</div>`; return; }
+            
+            const btn = document.getElementById('analyzeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Analyse en cours...';
+            document.getElementById('resultsContainer').innerHTML = `<div class="spinner-container"><div class="spinner-custom"></div><p style="color:#ffaa44; margin-top:20px;">🔬 Tokenisation, analyse lexicale et syntaxique...</p></div>`;
+
+            setTimeout(() => {
+                const lexical = analyzeLexical(text);
+                const syntax = analyzeSyntax(lexical.tokens);
+                const prediction = predictDisease(text, lexical);
+                const tree = buildTree(lexical.tokens, syntax);
+                displayResults(lexical, syntax, prediction, tree);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-microscope"></i> Lancer l\'analyse IA';
+                document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+            }, 600);
+        }
+
+        document.getElementById('analyzeBtn').addEventListener('click', analyze);
+        document.getElementById('symptomInput').addEventListener('keydown', e => { if (e.ctrlKey && e.key === 'Enter') analyze(); });
+    </script>
 </body>
 </html>

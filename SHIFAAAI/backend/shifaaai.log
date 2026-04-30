@@ -1,0 +1,2 @@
+2026-04-30 16:55:59,305 - __main__ - WARNING - Rate limiting non disponible: Limiter.__init__() got multiple values for argument 'key_func'
+2026-04-30 18:13:58,303 - __main__ - WARNING - Rate limiting non disponible: Limiter.__init__() got multiple values for argument 'key_func'
