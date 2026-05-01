@@ -1,7 +1,7 @@
 // api.js - Version améliorée
 
 // Utiliser l'API Flask réelle
-const API_URL = "http://127.0.0.1:5000/api/analysis/full";
+const API_URL = "http://127.0.0.1:5000/api/analyze";
 
 // Configuration de l'API
 const API_CONFIG = {
@@ -34,7 +34,7 @@ async function sendSymptoms(symptoms) {
                 "Accept": "application/json"
             },
             body: JSON.stringify({
-                symptoms: symptoms,
+                text: symptoms,
                 timestamp: new Date().toISOString()
             })
         });

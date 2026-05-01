@@ -3,15 +3,28 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from medical_apis import MedicalAPIs
+from infermedica_api import InfermedicaClient
 import re
 import unicodedata
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 PORT = 5000
 HOST = '127.0.0.1'
+
+# Initialisation du client Infermedica (à configurer avec vos clés)
+INFERMEDICA_APP_ID = os.getenv('INFERMEDICA_APP_ID', 'votre_app_id')
+INFERMEDICA_APP_KEY = os.getenv('INFERMEDICA_APP_KEY', 'votre_app_key')
+
+try:
+    infermedica_client = InfermedicaClient(INFERMEDICA_APP_ID, INFERMEDICA_APP_KEY)
+    print("✅ Client Infermedica initialisé")
+except Exception as e:
+    infermedica_client = None
+    print(f"⚠️ Erreur initialisation Infermedica: {e}")
 
 # ============================================================
 # BASE DE CONNAISSANCES MÉDICALE ÉTENDUE (40+ maladies)
@@ -289,6 +302,37 @@ def external_disease_info():
     
     result = MedicalAPIs.search_disease(disease_name)
     return jsonify(result)
+
+@app.route('/api/infermedica/parse', methods=['POST'])
+def infermedica_parse():
+    """API Infermedica - Parser les symptômes"""
+    if not infermedica_client:
+        return jsonify({"error": "Client Infermedica non configuré"}), 500
+    
+    try:
+        data = request.get_json()
+        text = data.get('text', '')
+        age = data.get('age', 30)
+        sex = data.get('sex', 'male')
+        
+        # Parser les symptômes
+        parsed = infermedica_client.parse_symptoms(text)
+        
+        # Obtenir le diagnostic si des symptômes sont détectés
+        diagnosis = None
+        if parsed.get('mentions'):
+            symptoms = parsed['mentions']
+            diagnosis = infermedica_client.get_diagnosis(symptoms, age, sex)
+        
+        return jsonify({
+            "success": True,
+            "parsed_symptoms": parsed,
+            "diagnosis": diagnosis,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/external/drug-info', methods=['POST'])
 def external_drug_info():

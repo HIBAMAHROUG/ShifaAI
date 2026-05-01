@@ -189,6 +189,204 @@ html{scroll-behavior:smooth;}
 .fdiv{width:100%;max-width:420px;height:1px;background:rgba(255,255,255,.07);}
 .fcpy{font-size:12px;color:#ffffff26;}
 
+/* STYLES AMÉLIORÉS POUR L'ANALYSE SYNTAXIQUE */
+.internal-panel{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;margin-top:16px;backdrop-filter:blur(8px);}
+.internal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.1);}
+.internal-title{font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+.detail-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;transition:all .2s;}
+.detail-btn:hover{background:rgba(255,255,255,.2);}
+
+.analysis-section{margin-bottom:24px;}
+.section-title{font-size:14px;font-weight:600;color:#93c5fd;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.syntax-info{margin-bottom:12px;}
+.syntax-info p{font-size:12px;color:rgba(255,255,255,.7);margin:0;}
+
+.tok-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding:12px;background:rgba(0,0,0,.2);border-radius:8px;}
+.tok{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:4px 8px;border-radius:6px;font-size:12px;color:#fff;display:flex;align-items:center;gap:4px;transition:all .2s;cursor:default;}
+.tok:hover{background:rgba(255,255,255,.2);transform:scale(1.05);}
+.tok.sym{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.4);}
+.tok.neg{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.4);}
+.tok.int{background:rgba(251,146,60,.2);border-color:rgba(251,146,60,.4);}
+.tok.word{background:rgba(107,114,128,.2);border-color:rgba(107,114,128,.4);}
+.token-type{font-size:10px;background:rgba(0,0,0,.3);padding:1px 4px;border-radius:3px;color:#93c5ff;}
+
+.mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.mini-stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:12px;text-align:center;transition:all .2s;}
+.mini-stat:hover{background:rgba(255,255,255,.1);transform:translateY(-2px);}
+.stat-number{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;}
+.stat-label{font-size:11px;color:rgba(255,255,255,.6);}
+.stat-symptom{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);}
+.stat-symptom .stat-number{color:#22c55e;}
+.stat-negation{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);}
+.stat-negation .stat-number{color:#ef4444;}
+.stat-intensifier{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);}
+.stat-intensifier .stat-number{color:#fb923c;}
+
+.syntax-table{width:100%;border-collapse:collapse;background:rgba(0,0,0,.2);border-radius:8px;overflow:hidden;}
+.syntax-table th{background:rgba(255,255,255,.1);color:#fff;font-size:12px;font-weight:600;padding:10px;text-align:left;}
+.syntax-table td{padding:8px 10px;font-size:12px;color:rgba(255,255,255,.9);border-top:1px solid rgba(255,255,255,.05);}
+.syntax-row:hover{background:rgba(255,255,255,.05);}
+.word-cell{font-weight:500;}
+.pos-pill{padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;}
+.pos-verb{background:rgba(239,68,68,.2);color:#f87171;}
+.pos-nom{background:rgba(34,197,94,.2);color:#4ade80;}
+.pos-det{background:rgba(59,130,246,.2);color:#60a5fa;}
+.pos-adv{background:rgba(251,146,60,.2);color:#fbbf24;}
+.pos-adj{background:rgba(168,85,247,.2);color:#a78bfa;}
+.pos-prep{background:rgba(6,182,212,.2);color:#22d3ee;}
+.pos-default{background:rgba(107,114,128,.2);color:#9ca3af;}
+.role-cell{color:rgba(255,255,255,.7);}
+.category-tag{padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500;}
+.tag-verb{background:rgba(239,68,68,.15);color:#fca5a5;}
+.tag-nom{background:rgba(34,197,94,.15);color:#86efac;}
+.tag-det{background:rgba(59,130,246,.15);color:#93c5fd;}
+.tag-adv{background:rgba(251,146,60,.15);color:#fcd34d;}
+.tag-adj{background:rgba(168,85,247,.15);color:#c4b5fd;}
+.tag-prep{background:rgba(6,182,212,.15);color:#67e8f9;}
+.tag-default{background:rgba(107,114,128,.15);color:#d1d5db;}
+
+.tree-box{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:12px;margin-top:12px;}
+.tree-box pre{font-family:'Courier New',monospace;font-size:11px;color:#93c5ff;margin:0;white-space:pre-wrap;word-break:break-all;}
+
+/* STYLES POUR LES RÉSULTATS D'ANALYSE SOUS L'IMAGE */
+.results-under-doctor{margin-top:40px;padding:0 20px;}
+.analysis-results{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;backdrop-filter:blur(10px);}
+.results-header{margin-bottom:20px;text-align:center;}
+.results-title{font-size:18px;font-weight:700;color:#fff;margin:0;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+.result-card{display:flex;align-items:center;gap:12px;padding:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;margin-bottom:16px;transition:all .2s;}
+.result-card:hover{background:rgba(255,255,255,.08);transform:translateY(-2px);}
+.main-result{background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(220,38,38,.05));border-color:rgba(239,68,68,.2);}
+.result-icon{flex-shrink:0;width:40px;height:40px;background:rgba(255,255,255,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.result-content{flex:1;}
+.result-label{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:4px;}
+.result-value{font-size:16px;font-weight:700;color:#fff;}
+
+.result-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.stat-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;}
+.stat-item.confidence{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2);}
+.stat-item.severity{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.2);}
+.stat-label{font-size:11px;color:rgba(255,255,255,.7);margin-bottom:6px;}
+.stat-value{font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;}
+.stat-bar{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+.stat-fill{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:2px;transition:width 0.5s ease;}
+.severity-badge{padding:4px 8px;background:rgba(251,146,60,.2);border-radius:6px;font-size:12px;text-align:center;}
+
+.treatment-card{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:12px;padding:16px;margin-bottom:16px;}
+.treatment-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:#22c55e;font-size:14px;font-weight:600;}
+.treatment-text{font-size:13px;color:rgba(255,255,255,.9);line-height:1.5;}
+
+.other-possibilities{margin-bottom:16px;}
+.possibilities-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:12px;}
+.possibilities-list{display:flex;flex-direction:column;gap:8px;}
+.possibility-item{display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;}
+.possibility-name{font-size:13px;color:#fff;font-weight:500;}
+.possibility-info{display:flex;gap:8px;}
+.prob{font-size:12px;color:#22c55e;font-weight:600;}
+.sev{font-size:11px;color:rgba(255,255,255,.6);padding:2px 6px;background:rgba(255,255,255,.1);border-radius:4px;}
+
+.external-matches{margin-bottom:16px;}
+.matches-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:12px;}
+.matches-list{display:flex;flex-direction:column;gap:8px;}
+.match-item{display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:6px;}
+.match-name{font-size:12px;color:#60a5fa;font-weight:500;}
+.match-id{font-size:11px;color:rgba(255,255,255,.5);}
+
+/* STYLES POUR LES RÉSULTATS À LA PLACE DE LA MAQUETTE */
+.results-section{padding:60px 80px;background:#fff;}
+.results-container{max-width:1200px;margin:0 auto;}
+.results-header{text-align:center;margin-bottom:48px;}
+.results-main-title{font-family:'Outfit',sans-serif;font-size:42px;font-weight:900;color:#0f172a;margin-bottom:12px;}
+.results-subtitle{font-size:18px;color:#64748b;margin:0;}
+
+.results-grid{display:grid;gap:32px;}
+.main-result-large{display:flex;align-items:center;gap:20px;padding:32px;background:linear-gradient(135deg,rgba(239,68,68,.05),rgba(220,38,38,.02));border:2px solid rgba(239,68,68,.1);border-radius:20px;transition:all .3s;}
+.main-result-large:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(239,68,68,.15);}
+.result-icon-large{flex-shrink:0;width:64px;height:64px;background:rgba(239,68,68,.1);border-radius:16px;display:flex;align-items:center;justify-content:center;}
+.result-content-large{flex:1;}
+.result-label-large{font-size:14px;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+.result-value-large{font-size:28px;font-weight:800;color:#0f172a;line-height:1.2;}
+
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.stat-card{display:flex;align-items:center;gap:16px;padding:24px;background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.05);border-radius:16px;transition:all .3s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.1);}
+.confidence-card{background:linear-gradient(135deg,rgba(34,197,94,.05),rgba(22,163,74,.02));border-color:rgba(34,197,94,.1);}
+.severity-card{background:linear-gradient(135deg,rgba(251,146,60,.05),rgba(245,158,11,.02));border-color:rgba(251,146,60,.1);}
+.stat-icon{flex-shrink:0;width:48px;height:48px;background:rgba(255,255,255,.9);border-radius:12px;display:flex;align-items:center;justify-content:center;}
+.stat-content{flex:1;}
+.stat-label{font-size:13px;color:#64748b;margin-bottom:8px;}
+.stat-value-large{font-size:24px;font-weight:800;color:#0f172a;margin-bottom:12px;}
+.stat-bar-large{width:100%;height:6px;background:rgba(0,0,0,.05);border-radius:3px;overflow:hidden;}
+.stat-fill-large{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:3px;transition:width 0.8s ease;}
+.severity-badge-large{padding:8px 16px;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);border-radius:8px;font-size:14px;font-weight:600;color:#ea580c;text-align:center;}
+
+.treatment-card-large{padding:28px;background:linear-gradient(135deg,rgba(34,197,94,.05),rgba(22,163,74,.02));border:2px solid rgba(34,197,94,.1);border-radius:20px;}
+.treatment-header-large{display:flex;align-items:center;gap:12px;margin-bottom:16px;color:#16a34a;font-size:18px;font-weight:700;}
+.treatment-text-large{font-size:16px;color:#0f172a;line-height:1.6;}
+
+.other-possibilities-large{margin-top:32px;}
+.possibilities-title-large{font-size:24px;font-weight:800;color:#0f172a;margin-bottom:20px;}
+.possibilities-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
+.possibility-card{padding:20px;background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.05);border-radius:16px;transition:all .3s;}
+.possibility-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.possibility-name-large{font-size:18px;font-weight:700;color:#0f172a;margin-bottom:12px;}
+.possibility-stats{display:flex;gap:12px;margin-bottom:12px;}
+.prob-large{font-size:16px;font-weight:700;color:#16a34a;}
+.sev-large{font-size:14px;color:#ea580c;padding:4px 8px;background:rgba(251,146,60,.1);border-radius:6px;}
+.possibility-treatment{font-size:14px;color:#64748b;line-height:1.5;}
+
+.external-matches-large{margin-top:32px;}
+.matches-title-large{font-size:24px;font-weight:800;color:#0f172a;margin-bottom:20px;}
+.matches-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.match-card-large{padding:16px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.1);border-radius:12px;transition:all .3s;}
+.match-card-large:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(59,130,246,.15);}
+.match-name-large{font-size:16px;font-weight:600;color:#2563eb;margin-bottom:8px;}
+.match-id-large{font-size:13px;color:#64748b;font-family:'Courier New',monospace;}
+
+/* STYLES POUR LES RÉSULTATS DANS LA COLONNE DE DROITE */
+.results-right-panel{padding:20px;height:100%;display:flex;flex-direction:column;gap:20px;}
+.results-header-right{text-align:center;margin-bottom:20px;}
+.results-title-right{font-size:20px;font-weight:700;color:#fff;margin:0 0 8px 0;}
+.results-subtitle-right{font-size:14px;color:rgba(255,255,255,.7);margin:0;}
+
+.result-card-right{display:flex;align-items:center;gap:12px;padding:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;transition:all .2s;}
+.result-card-right:hover{background:rgba(255,255,255,.12);transform:translateY(-2px);}
+.result-card-right.main{background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(220,38,38,.08));border-color:rgba(239,68,68,.3);}
+.result-icon-right{flex-shrink:0;width:40px;height:40px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.result-content-right{flex:1;}
+.result-label-right{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:4px;}
+.result-value-right{font-size:18px;font-weight:700;color:#fff;}
+
+.stats-right{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.stat-right{padding:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;}
+.stat-right.confidence{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2);}
+.stat-right.severity{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.2);}
+.stat-label-right{font-size:11px;color:rgba(255,255,255,.7);margin-bottom:6px;}
+.stat-value-right{font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;}
+.stat-bar-right{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+.stat-fill-right{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:2px;transition:width 0.5s ease;}
+.severity-badge-right{padding:4px 8px;background:rgba(251,146,60,.2);border-radius:6px;font-size:12px;text-align:center;color:#fff;}
+
+.treatment-right{padding:16px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:12px;}
+.treatment-header-right{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:#22c55e;font-size:14px;font-weight:600;}
+.treatment-text-right{font-size:13px;color:rgba(255,255,255,.9);line-height:1.5;}
+
+.other-possibilities-right{margin-top:16px;}
+.possibilities-title-right{font-size:14px;font-weight:600;color:#fff;margin-bottom:12px;}
+.possibilities-list-right{display:flex;flex-direction:column;gap:8px;}
+.possibility-item-right{display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:6px;}
+.possibility-name-right{font-size:13px;color:#fff;font-weight:500;}
+.possibility-info-right{display:flex;gap:8px;}
+.prob-right{font-size:12px;color:#22c55e;font-weight:600;}
+.sev-right{font-size:11px;color:rgba(255,255,255,.6);padding:2px 6px;background:rgba(255,255,255,.1);border-radius:4px;}
+
+.external-matches-right{margin-top:16px;}
+.matches-title-right{font-size:14px;font-weight:600;color:#fff;margin-bottom:12px;}
+.matches-list-right{display:flex;flex-direction:column;gap:8px;}
+.match-item-right{display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:6px;}
+.match-name-right{font-size:12px;color:#60a5fa;font-weight:500;}
+.match-id-right{font-size:11px;color:rgba(255,255,255,.5);}
+
 @media (max-width: 1180px){
   .hero{grid-template-columns:1fr;padding:40px 32px 60px;gap:24px;}
   .hero-right{padding:20px 0 0;}
@@ -469,7 +667,7 @@ function ShifaaAI() {
       setIsAnalyzing(true);
       setApiError("");
 
-      const response = await fetch("http://127.0.0.1:5000/api/predict/", {
+      const response = await fetch("http://127.0.0.1:5000/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
@@ -482,16 +680,16 @@ function ShifaaAI() {
 
       setAnalysisResult(payload);
 
-      const searchQuery = (payload.predicted_disease && payload.predicted_disease !== "Non déterminé")
-        ? payload.predicted_disease
+      const searchQuery = (payload.top_prediction && payload.top_prediction.disease && payload.top_prediction.disease !== "Non déterminé")
+        ? payload.top_prediction.disease
         : text;
 
       let topDiseases = [];
       try {
-        const extResp = await fetch("http://127.0.0.1:5000/api/external/disease/search", {
+        const extResp = await fetch("http://127.0.0.1:5000/api/external/disease-info", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: searchQuery, limit: 10 }),
+          body: JSON.stringify({ disease: searchQuery }),
         });
         const extPayload = await extResp.json();
         if (extResp.ok && extPayload.results) {
@@ -574,110 +772,220 @@ function ShifaaAI() {
                 {isAnalyzing ? "Analyse en cours..." : "Analyser mes symptômes"}
               </button>
               {apiError && <div className="api-msg err">{apiError}</div>}
-              {analysisResult && (
-                <div className="api-res">
-                  <h4>Résultat IA</h4>
-                  <p>Maladie prédite: <strong>{analysisResult.predicted_disease || "N/A"}</strong></p>
-                  <p>Confiance: <strong>{analysisResult.probability || "N/A"}</strong></p>
-                  {analysisResult.external_matches && analysisResult.external_matches.length > 0 && (
-                    <>
-                      <p>Correspondances Disease Ontology:</p>
-                      <ul className="api-list">
-                        {analysisResult.external_matches.slice(0, 3).map((item) => (
-                          <li key={item.id || item.label}>{item.label || "Unknown"} ({item.id || "N/A"})</li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                </div>
-              )}
               {internalNlp && (
                 <div className="internal-panel">
                   <div className="internal-head">
-                    <div className="internal-title">Cuisine interne NLP (visible)</div>
+                    <div className="internal-title">🔍 Analyse Syntaxique Avancée</div>
                     <button className="detail-btn" onClick={() => setShowDetailedNlp((v) => !v)}>
-                      {showDetailedNlp ? "Mode compact" : "Mode détaillé"}
+                      {showDetailedNlp ? "Vue simplifiée" : "Vue détaillée"}
                     </button>
                   </div>
-                  <div className="tok-wrap">
-                    {internalNlp.lexical.tokens.slice(0, showDetailedNlp ? internalNlp.lexical.tokens.length : 40).map((t, idx) => (
-                      <span
-                        key={`${t.word}-${idx}`}
-                        className={`tok ${t.type === "symptome" ? "sym" : t.type === "negation" ? "neg" : t.type === "intensificateur" ? "int" : t.type === "temps" ? "time" : ""}`}
-                      >
-                        {t.word} [{t.type}]
-                      </span>
-                    ))}
-                  </div>
-                  <div className="mini-stats">
-                    <div className="mini-stat"><b>{internalNlp.lexical.stats.total}</b><span>Tokens</span></div>
-                    <div className="mini-stat"><b>{internalNlp.lexical.stats.symptoms}</b><span>Symptomes</span></div>
-                    <div className="mini-stat"><b>{internalNlp.lexical.stats.negations}</b><span>Negations</span></div>
-                    <div className="mini-stat"><b>{internalNlp.lexical.stats.intensifiers}</b><span>Intensifs</span></div>
-                  </div>
-                  <table className="syntax-table">
-                    <thead>
-                      <tr><th>Mot</th><th>POS</th><th>Role</th></tr>
-                    </thead>
-                    <tbody>
-                      {internalNlp.syntax.slice(0, showDetailedNlp ? internalNlp.syntax.length : 20).map((s, i) => (
-                        <tr key={`${s.word}-${i}`}>
-                          <td>{s.word}</td>
-                          <td>
-                            <span
-                              className={`pos-pill ${
-                                s.pos === "VERBE" ? "pos-verb" :
-                                s.pos === "NOM" ? "pos-nom" :
-                                s.pos === "DET" ? "pos-det" :
-                                s.pos === "ADV" ? "pos-adv" : "pos-default"
-                              }`}
-                            >
-                              {s.pos}
-                            </span>
-                          </td>
-                          <td>{s.role}</td>
-                        </tr>
+                  
+                  {/* Section Analyse Lexicale */}
+                  <div className="analysis-section">
+                    <h5 className="section-title">📝 Analyse Lexicale</h5>
+                    <div className="tok-wrap">
+                      {internalNlp.lexical.tokens.slice(0, showDetailedNlp ? internalNlp.lexical.tokens.length : 40).map((t, idx) => (
+                        <span
+                          key={`${t.word}-${idx}`}
+                          className={`tok ${t.type === "SYMPTOM" ? "sym" : t.type === "NEGATION" ? "neg" : t.type === "INTENSIFIER" ? "int" : t.type === "WORD" ? "word" : ""}`}
+                          title={`Type: ${t.type} | Index: ${idx}`}
+                        >
+                          {t.word}
+                          <span className="token-type">{t.type}</span>
+                        </span>
                       ))}
-                    </tbody>
-                  </table>
-                  <div className="tree-box">{internalNlp.tree}</div>
+                    </div>
+                    <div className="mini-stats">
+                      <div className="mini-stat">
+                        <div className="stat-number">{internalNlp.lexical.stats.total}</div>
+                        <div className="stat-label">Mots total</div>
+                      </div>
+                      <div className="mini-stat stat-symptom">
+                        <div className="stat-number">{internalNlp.lexical.stats.symptoms}</div>
+                        <div className="stat-label">Symptômes</div>
+                      </div>
+                      <div className="mini-stat stat-negation">
+                        <div className="stat-number">{internalNlp.lexical.stats.negations}</div>
+                        <div className="stat-label">Négations</div>
+                      </div>
+                      <div className="mini-stat stat-intensifier">
+                        <div className="stat-number">{internalNlp.lexical.stats.intensifiers}</div>
+                        <div className="stat-label">Intensificateurs</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section Analyse Syntaxique */}
+                  <div className="analysis-section">
+                    <h5 className="section-title">🔗 Analyse Syntaxique</h5>
+                    <div className="syntax-info">
+                      <p><strong>Structure grammaticale :</strong> Identification des parties du discours et relations syntaxiques</p>
+                    </div>
+                    <table className="syntax-table">
+                      <thead>
+                        <tr>
+                          <th>Mot</th>
+                          <th>Type grammatical</th>
+                          <th>Rôle syntaxique</th>
+                          <th>Catégorie</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {internalNlp.syntax.slice(0, showDetailedNlp ? internalNlp.syntax.length : 15).map((s, i) => (
+                          <tr key={`${s.word}-${i}`} className="syntax-row">
+                            <td className="word-cell">
+                              <strong>{s.word}</strong>
+                            </td>
+                            <td>
+                              <span
+                                className={`pos-pill ${
+                                  s.pos === "VERBE" ? "pos-verb" :
+                                  s.pos === "NOM" ? "pos-nom" :
+                                  s.pos === "DET" ? "pos-det" :
+                                  s.pos === "ADV" ? "pos-adv" :
+                                  s.pos === "ADJ" ? "pos-adj" :
+                                  s.pos === "PREP" ? "pos-prep" : "pos-default"
+                                }`}
+                                title={`Partie du discours: ${s.pos}`}
+                              >
+                                {s.pos}
+                              </span>
+                            </td>
+                            <td className="role-cell">{s.role || "Non défini"}</td>
+                            <td>
+                              <span className={`category-tag ${
+                                s.pos === "VERBE" ? "tag-verb" :
+                                s.pos === "NOM" ? "tag-nom" :
+                                s.pos === "DET" ? "tag-det" :
+                                s.pos === "ADV" ? "tag-adv" :
+                                s.pos === "ADJ" ? "tag-adj" :
+                                s.pos === "PREP" ? "tag-prep" : "tag-default"
+                              }`}>
+                                {s.pos === "VERBE" ? "Action" :
+                                 s.pos === "NOM" ? "Entité" :
+                                 s.pos === "DET" ? "Déterminant" :
+                                 s.pos === "ADV" ? "Modifieur" :
+                                 s.pos === "ADJ" ? "Qualificatif" :
+                                 s.pos === "PREP" ? "Lien" : "Autre"}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Section Arbre Syntaxique */}
+                  {showDetailedNlp && internalNlp.tree && (
+                    <div className="analysis-section">
+                      <h5 className="section-title">🌳 Arbre Syntaxique</h5>
+                      <div className="tree-box">
+                        <pre>{internalNlp.tree}</pre>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           </div>
           <div className="hero-right">
-            <div className="illus">
-              <div className="illus-main">
-                <div className="illus-inner">
-                  <div className="illus-glow"/>
-                  <DoctorSVG/>
+            {/* Résultats de l'analyse à la place du médecin */}
+            {analysisResult ? (
+              <div className="results-right-panel">
+                <div className="results-header-right">
+                  <h3 className="results-title-right">🏥 Résultats de l'Analyse</h3>
+                  <p className="results-subtitle-right">Diagnostic IA complet</p>
+                </div>
+                
+                <div className="result-card-right main">
+                  <div className="result-icon-right">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                  </div>
+                  <div className="result-content-right">
+                    <div className="result-label-right">Maladie prédite</div>
+                    <div className="result-value-right">{analysisResult.top_prediction?.disease || "N/A"}</div>
+                  </div>
+                </div>
+                
+                <div className="stats-right">
+                  <div className="stat-right confidence">
+                    <div className="stat-label-right">Confiance</div>
+                    <div className="stat-value-right">{analysisResult.top_prediction?.probability || "N/A"}%</div>
+                    <div className="stat-bar-right">
+                      <div className="stat-fill-right" style={{width: `${analysisResult.top_prediction?.probability || 0}%`}}></div>
+                    </div>
+                  </div>
+                  
+                  <div className="stat-right severity">
+                    <div className="stat-label-right">Sévérité</div>
+                    <div className="stat-value-right severity-badge-right">{analysisResult.top_prediction?.severity || "N/A"}</div>
+                  </div>
+                </div>
+                
+                <div className="treatment-right">
+                  <div className="treatment-header-right">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/></svg>
+                    <span>Traitement recommandé</span>
+                  </div>
+                  <div className="treatment-text-right">{analysisResult.top_prediction?.treatment || "N/A"}</div>
+                </div>
+                
+                {analysisResult.predictions && analysisResult.predictions.length > 1 && (
+                  <div className="other-possibilities-right">
+                    <h4 className="possibilities-title-right">Autres possibilités</h4>
+                    <div className="possibilities-list-right">
+                      {analysisResult.predictions.slice(1, 3).map((pred, idx) => (
+                        <div key={idx} className="possibility-item-right">
+                          <div className="possibility-name-right">{pred.disease}</div>
+                          <div className="possibility-info-right">
+                            <span className="prob-right">{pred.probability}%</span>
+                            <span className="sev-right">{pred.severity}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {analysisResult.external_matches && analysisResult.external_matches.length > 0 && (
+                  <div className="external-matches-right">
+                    <h4 className="matches-title-right">Correspondances externes</h4>
+                    <div className="matches-list-right">
+                      {analysisResult.external_matches.slice(0, 2).map((item, idx) => (
+                        <div key={idx} className="match-item-right">
+                          <div className="match-name-right">{item.label || "Unknown"}</div>
+                          <div className="match-id-right">{item.id || "N/A"}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="illus">
+                <div className="illus-main">
+                  <div className="illus-inner">
+                    <div className="illus-glow"/>
+                    <DoctorSVG/>
+                  </div>
+                </div>
+                <div className="pill pill-1">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.2"><polyline points="20 6 9 17 4 12"/></svg>
+                  <div><div className="pill-name">Diagnostic précis</div><div className="pill-info">95% de précision</div></div>
+                </div>
+                <div className="pill pill-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <div><div className="pill-name">Résultat rapide</div><div className="pill-info">En quelques secondes</div></div>
+                </div>
+                <div className="pill pill-3">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c084fc" strokeWidth="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <div><div className="pill-name">100% Sécurisé</div><div className="pill-info">Données protégées</div></div>
                 </div>
               </div>
-              <div className="pill pill-1">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.2"><polyline points="20 6 9 17 4 12"/></svg>
-                <div><div className="pill-name">Diagnostic précis</div><div className="pill-info">95% de précision</div></div>
-              </div>
-              <div className="pill pill-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <div><div className="pill-name">Résultat rapide</div><div className="pill-info">En quelques secondes</div></div>
-              </div>
-              <div className="pill pill-3">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c084fc" strokeWidth="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <div><div className="pill-name">100% Sécurisé</div><div className="pill-info">Données protégées</div></div>
-              </div>
-            </div>
+            )}
           </div>
         </section>
-
-        <div className="stats-bar">
-          {STATS.map((s) => (
-            <div key={s.l} className="stat-item">
-              {s.icon}
-              <div className="stat-num" style={{ color: s.c }}>{s.v}</div>
-              <div className="stat-lbl">{s.l}</div>
-            </div>
-          ))}
-        </div>
 
         <section className="how-sec" id="comment">
           <div className="sec-hdr">
