@@ -1,110 +1,335 @@
-﻿# app.py - Version corrigée
+# app.py - Serveur Flask avec APIs externes et détection avancée
 
-import os
-import sys
-import logging
-from datetime import datetime
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from medical_apis import MedicalAPIs
+import re
+import unicodedata
+from datetime import datetime
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+app = Flask(__name__)
+CORS(app)
 
+PORT = 5000
+HOST = '127.0.0.1'
 
-class Config:
-    APP_NAME = "SHIFAAAI API"
-    APP_VERSION = "2.0.0"
-    DEBUG = True
-    PORT = 5000
-    HOST = '127.0.0.1'
-    CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:5500', 'http://127.0.0.1:5500']
+# ============================================================
+# BASE DE CONNAISSANCES MÉDICALE ÉTENDUE (40+ maladies)
+# ============================================================
 
+DISEASE_DATABASE = {
+    # Maladies respiratoires
+    "Grippe": {
+        "keywords": ["fievre", "fièvre", "toux", "fatigue", "courbature", "frisson"],
+        "severity": "modéré", "treatment": "Repos, hydratation, paracétamol"
+    },
+    "COVID-19": {
+        "keywords": ["fievre", "fièvre", "toux", "fatigue", "perte gout", "perte odorat", "anosmie", "agueusie", "covid"],
+        "severity": "élevé", "treatment": "Isolement, repos, consultation médicale"
+    },
+    "Bronchite": {
+        "keywords": ["toux", "expectoration", "glaires", "poitrine", "respiration", "essoufflement", "bronchite"],
+        "severity": "modéré", "treatment": "Repos, bronchodilatateurs, hydratation"
+    },
+    "Pneumonie": {
+        "keywords": ["poumon", "infection poumon", "fievre elevee", "toux grasse", "crachat sang"],
+        "severity": "critique", "treatment": "URGENCE - Consultation médicale immédiate"
+    },
+    "Asthme": {
+        "keywords": ["respiration sifflante", "sifflement", "crise asthme", "ventoline", "oppression thoracique"],
+        "severity": "modéré", "treatment": "Bronchodilatateurs, consultation pneumologue"
+    },
+    
+    # ORL
+    "Angine": {
+        "keywords": ["gorge", "mal gorge", "douleur gorge", "avaler", "amygdale"],
+        "severity": "faible", "treatment": "Gargarismes, boissons chaudes, paracétamol"
+    },
+    "Rhinite allergique": {
+        "keywords": ["nez", "éternuement", "gratte", "pollin", "allergie"],
+        "severity": "faible", "treatment": "Antihistaminiques, éviter allergènes"
+    },
+    "Otite": {
+        "keywords": ["oreille", "douleur oreille", "infection oreille", "otite"],
+        "severity": "faible", "treatment": "Consulter ORL, antalgiques"
+    },
+    "Sinusite": {
+        "keywords": ["sinus", "nez bouché", "douleur visage", "sinusite"],
+        "severity": "faible", "treatment": "Lavage nez, décongestionnants"
+    },
+    
+    # Neurologique
+    "Migraine": {
+        "keywords": ["migraine", "mal tete", "cephalee", "tete", "lumiere", "bruit", "nausee", "aura"],
+        "severity": "modéré", "treatment": "Repos obscurité, antimigraineux"
+    },
+    "Céphalée de tension": {
+        "keywords": ["tension tete", "mal tete permanent", "stress tete"],
+        "severity": "faible", "treatment": "Repos, relaxation, antalgiques"
+    },
+    "Vertige positionnel": {
+        "keywords": ["vertige", "tete tourne", "etourdissement", "perte equilibre"],
+        "severity": "modéré", "treatment": "Kinésithérapie vestibulaire"
+    },
+    
+    # Digestif
+    "Gastro-entérite": {
+        "keywords": ["nausee", "vomissement", "diarrhee", "ventre", "gastro"],
+        "severity": "modéré", "treatment": "Hydratation, repos, régime sans lactose"
+    },
+    "Gastrite": {
+        "keywords": ["estomac", "brulure estomac", "acidite", "gastrite"],
+        "severity": "faible", "treatment": "Anti-acides, éviter aliments gras"
+    },
+    "Constipation": {
+        "keywords": ["constipation", "selles dures", "difficulte aller selle"],
+        "severity": "faible", "treatment": "Fibres, hydratation, activité physique"
+    },
+    
+    # Cardiovasculaire
+    "Problème cardiaque": {
+        "keywords": ["coeur", "palpitation", "douleur poitrine", "cardiaque", "infarctus", "angine poitrine", "tachycardie"],
+        "severity": "critique", "treatment": "URGENCE - Consulter immédiatement"
+    },
+    "Hypertension": {
+        "keywords": ["tension", "pression arterielle", "hypertension", "tension elevee"],
+        "severity": "modéré", "treatment": "Consultation cardiologue, régime sans sel"
+    },
+    
+    # Rhumatologique
+    "Arthrose": {
+        "keywords": ["articulation", "genou", "hanche", "arthrose", "raideur matin"],
+        "severity": "modéré", "treatment": "Physiothérapie, antalgiques"
+    },
+    "Lombalgie": {
+        "keywords": ["lombaire", "dos", "mal dos", "lombalgie", "sciatique"],
+        "severity": "modéré", "treatment": "Repos, kinésithérapie"
+    },
+    
+    # Dermatologique
+    "Eczéma": {
+        "keywords": ["peau", "demangeaison", "rougeur", "eczema", "plaque rouge"],
+        "severity": "faible", "treatment": "Crèmes hydratantes, corticoïdes"
+    },
+    "Urticaire": {
+        "keywords": ["bouton", "urticaire", "allergie peau", "plaque"],
+        "severity": "faible", "treatment": "Antihistaminiques"
+    },
+    
+    # Autres
+    "Dépression": {
+        "keywords": ["tristesse", "deprime", "moral bas", "perte plaisir", "fatigue morale"],
+        "severity": "modéré", "treatment": "Consulter psychologue/psychiatre"
+    },
+    "Anxiété": {
+        "keywords": ["stress", "anxiete", "angoisse", "panique", "nerveux"],
+        "severity": "modéré", "treatment": "Relaxation, consultation psychologue"
+    }
+}
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)
-    CORS(app, origins=Config.CORS_ORIGINS)
+# ============================================================
+# FONCTIONS D'ANALYSE
+# ============================================================
 
-    @app.route('/health', methods=['GET'])
-    def health_check():
+def normalize_text(text: str) -> str:
+    """Normaliser le texte (minuscules, sans accents)"""
+    text = text.lower()
+    text = unicodedata.normalize('NFD', text).encode('ASCII', 'ignore').decode('utf-8')
+    return text
+
+def extract_symptoms(text: str) -> list:
+    """Extraire les symptômes du texte"""
+    normalized = normalize_text(text)
+    all_keywords = []
+    
+    for disease, info in DISEASE_DATABASE.items():
+        for keyword in info['keywords']:
+            if keyword in normalized:
+                all_keywords.append(keyword)
+    
+    # Symptômes courants prédéfinis
+    common_symptoms = {
+        'fievre': 'fièvre', 'toux': 'toux', 'fatigue': 'fatigue',
+        'courbature': 'courbatures', 'frisson': 'frissons', 'gorge': 'mal de gorge',
+        'nausee': 'nausée', 'vomissement': 'vomissement', 'diarrhee': 'diarrhée',
+        'essoufflement': 'essoufflement', 'poitrine': 'douleur poitrine',
+        'migraine': 'migraine', 'vertige': 'vertige', 'palpitation': 'palpitations'
+    }
+    
+    detected = []
+    for key, symptom in common_symptoms.items():
+        if key in normalized:
+            detected.append(symptom)
+    
+    return list(set(detected + all_keywords))
+
+def predict_diseases(symptoms: list) -> list:
+    """Prédire les maladies avec scores de probabilité"""
+    scores = {}
+    
+    for disease, info in DISEASE_DATABASE.items():
+        score = 0
+        max_possible = len(info['keywords'])
+        
+        for sym in symptoms:
+            for keyword in info['keywords']:
+                if sym == keyword or keyword in sym or sym in keyword:
+                    score += 1
+                    break
+        
+        if max_possible > 0:
+            probability = (score / max_possible) * 100
+            if probability > 15:
+                scores[disease] = {
+                    "probability": round(probability),
+                    "severity": info['severity'],
+                    "treatment": info['treatment']
+                }
+    
+    # Trier par probabilité décroissante
+    sorted_diseases = sorted(scores.items(), key=lambda x: x[1]['probability'], reverse=True)
+    
+    results = []
+    for disease, info in sorted_diseases[:5]:
+        results.append({
+            "disease": disease,
+            "probability": info['probability'],
+            "severity": info['severity'],
+            "treatment": info['treatment']
+        })
+    
+    return results
+
+def tokenize_text(text: str) -> list:
+    """Tokeniser le texte avec analyse lexicale"""
+    words = text.split()
+    tokens = []
+    
+    for word in words:
+        clean_word = word.lower().strip('.,;:!?')
+        token_type = "WORD"
+        
+        # Vérifier si c'est un symptôme
+        for disease, info in DISEASE_DATABASE.items():
+            for keyword in info['keywords']:
+                if keyword in clean_word:
+                    token_type = "SYMPTOM"
+                    break
+            if token_type == "SYMPTOM":
+                break
+        
+        # Vérifier les négations
+        if clean_word in ['pas', 'ne', 'non', 'jamais', 'plus', 'aucun']:
+            token_type = "NEGATION"
+        
+        # Vérifier les intensificateurs
+        if clean_word in ['très', 'beaucoup', 'extremement', 'trop', 'fort', 'intense']:
+            token_type = "INTENSIFIER"
+        
+        tokens.append({"word": word, "type": token_type})
+    
+    return tokens
+
+# ============================================================
+# ROUTES API
+# ============================================================
+
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({
+        "status": "healthy",
+        "service": "ShifaaAI Medical API",
+        "version": "3.0.0",
+        "timestamp": datetime.now().isoformat()
+    })
+
+@app.route('/api/analyze', methods=['POST'])
+def analyze():
+    """Endpoint principal d'analyse médicale"""
+    try:
+        data = request.get_json()
+        text = data.get('text', '')
+        
+        if not text:
+            return jsonify({"error": "Aucun symptôme fourni"}), 400
+        
+        # Analyse
+        symptoms = extract_symptoms(text)
+        predictions = predict_diseases(symptoms)
+        tokens = tokenize_text(text)
+        
+        # Appel aux APIs externes pour enrichir
+        external_info = {}
+        if predictions:
+            top_disease = predictions[0]['disease']
+            # Recherche d'informations complémentaires via Disease Ontology API
+            mesh_result = MedicalAPIs.search_mesh_term(top_disease)
+            if mesh_result.get('success'):
+                external_info['mesh'] = mesh_result['data']
+        
         return jsonify({
             "success": True,
-            "service": Config.APP_NAME,
-            "version": Config.APP_VERSION,
-            "status": "healthy",
+            "text": text,
+            "tokens": tokens,
+            "symptoms_detected": symptoms,
+            "predictions": predictions,
+            "top_prediction": predictions[0] if predictions else {"disease": "Non déterminé", "probability": 20},
+            "external_info": external_info,
             "timestamp": datetime.now().isoformat()
-        }), 200
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    @app.route('/info', methods=['GET'])
-    def get_info():
-        return jsonify({
-            "success": True,
-            "name": Config.APP_NAME,
-            "version": Config.APP_VERSION,
-            "endpoints": {
-                "health": "/health",
-                "info": "/info",
-                "predict": "/api/predict/"
-            }
-        }), 200
+@app.route('/api/external/disease-info', methods=['POST'])
+def external_disease_info():
+    """API externe - Informations sur une maladie via Disease Ontology"""
+    data = request.get_json()
+    disease_name = data.get('disease', '')
+    
+    result = MedicalAPIs.search_disease(disease_name)
+    return jsonify(result)
 
-    @app.route('/api/predict/', methods=['POST'])
-    def predict():
-        try:
-            data = request.get_json()
-            text = data.get('text', '') or data.get('symptoms', '')
-            if not text:
-                return jsonify({"error": "No symptoms provided"}), 400
-            text_lower = text.lower()
-            if 'fièvre' in text_lower and 'toux' in text_lower:
-                disease = "Grippe"
-                confidence = 85.0
-            elif 'gorge' in text_lower:
-                disease = "Angine"
-                confidence = 70.0
-            elif 'nausée' in text_lower or 'vomissement' in text_lower:
-                disease = "Gastro-entérite"
-                confidence = 75.0
-            elif 'maux de tête' in text_lower:
-                disease = "Migraine"
-                confidence = 65.0
-            else:
-                disease = "Non déterminé"
-                confidence = 40.0
-            return jsonify({
-                "success": True,
-                "input_text": text,
-                "predicted_disease": disease,
-                "confidence": confidence,
-                "probability": f"{confidence}%"
-            }), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+@app.route('/api/external/drug-info', methods=['POST'])
+def external_drug_info():
+    """API externe - Informations sur un médicament via OpenFDA"""
+    data = request.get_json()
+    drug_name = data.get('drug', '')
+    
+    result = MedicalAPIs.search_drug(drug_name)
+    return jsonify(result)
 
-    @app.route('/', defaults={'path': ''})
-    @app.route('/<path:path>')
-    def serve_frontend(path):
-        frontend_path = os.path.join(os.path.dirname(__file__), '..', 'frontend')
-        if os.path.exists(frontend_path):
-            from flask import send_from_directory
-            if path and os.path.exists(os.path.join(frontend_path, path)):
-                return send_from_directory(frontend_path, path)
-            elif os.path.exists(os.path.join(frontend_path, 'index.html')):
-                return send_from_directory(frontend_path, 'index.html')
-        return jsonify({"error": "Frontend not found"}), 404
+@app.route('/api/symptoms-list', methods=['GET'])
+def get_symptoms_list():
+    """Liste des symptômes reconnus"""
+    all_symptoms = set()
+    for disease, info in DISEASE_DATABASE.items():
+        for keyword in info['keywords']:
+            all_symptoms.add(keyword)
+    
+    return jsonify({
+        "symptoms": sorted(list(all_symptoms)),
+        "count": len(all_symptoms)
+    })
 
-    return app
+@app.route('/api/diseases-list', methods=['GET'])
+def get_diseases_list():
+    """Liste des maladies détectables"""
+    return jsonify({
+        "diseases": list(DISEASE_DATABASE.keys()),
+        "count": len(DISEASE_DATABASE)
+    })
 
-
-if __name__ == "__main__":
-    app = create_app()
+if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🏥 SHIFAAAI - API SERVER")
+    print("🏥 SHIFAAAI MEDICAL API v3.0")
     print("="*60)
-    print(f"🌐 Serveur: http://127.0.0.1:5000")
+    print(f"🌐 Serveur: http://{HOST}:{PORT}")
     print("📋 Endpoints disponibles:")
-    print("   GET  /health")
-    print("   GET  /info")
-    print("   POST /api/predict/")
+    print("   POST /api/analyze              - Analyse médicale")
+    print("   GET  /api/symptoms-list        - Liste des symptômes")
+    print("   GET  /api/diseases-list        - Liste des maladies")
+    print("   POST /api/external/disease-info - Infos maladie (Disease Ontology)")
+    print("   POST /api/external/drug-info    - Infos médicament (OpenFDA)")
     print("="*60 + "\n")
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host=HOST, port=PORT, debug=True)
