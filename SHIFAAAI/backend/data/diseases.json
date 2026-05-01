@@ -1,3 +1,368 @@
 {
-  "diseases": []
+  "source": "Disease Ontology / OLS4",
+  "count": 36,
+  "diseases": [
+    {
+      "id": "DOID:8469",
+      "label": "influenza",
+      "description": "A viral infectious disease that results in infection, located in respiratory tract, has_material_basis_in Influenzavirus A (Alphainfluenzavirus), has_material_basis_in Influenzavirus B (Betainfluenzavirus), or has_material_basis_in Influenzavirus C (Gammainfluenzavirus), which are transmitted_by droplet spread of oronasal secretions during coughing, sneezing, or talking from an infected person. It is a highly contagious disease that affects birds and mammals and has_symptom chills, has_symptom fever, has_symptom sore throat, has_symptom runny nose, has_symptom muscle pains, has_symptom severe headache, has_symptom cough, and has_symptom weakness.",
+      "synonyms": [
+        "Influenza with other manifestations",
+        "flu",
+        "influenza with non-respiratory manifestation"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0050211",
+      "label": "swine influenza",
+      "description": "An influenza that results_in infection located_in respiratory tract of pigs and humans, has_material_basis_in Influenza C virus (Gammainfluenzavirus influenzae), or has_material_basis_in Influenza A virus (Alphainfluenzavirus influenzae) including subtypes (H1N1, H1N2, H3N1, H3N2, and H2N3), which are transmitted_by direct contact with infected pigs. The infection in humans has_symptom fever, has_symptom lethargy, has_symptom lack of appetite, has_symptom coughing, has_symptom runny nose, has_symptom sore throat, has_symptom nausea, has_symptom vomiting, and has_symptom diarrhea.",
+      "synonyms": [],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:4492",
+      "label": "avian influenza",
+      "description": "An influenza that results in infection located in respiratory tract of humans, domestic and wild birds, has_material_basis_in Influenza A virus (Alphainfluenzavirus influenzae), which is transmitted by contact with infected poultry. At least five strains of avian influenza A viruses (H5N1, H7N3, H7N2, H7N7 and H9N2) are known to cause human infections. The infection has_symptom fever, has_symptom cough, has_symptom sore throat, has_symptom muscle aches, has_symptom nausea, has_symptom diarrhea, has_symptom vomiting, has_symptom neurologic changes, has_symptom pneumonia, and has_symptom acute respiratory distress.",
+      "synonyms": [
+        "avian flu",
+        "bird flu"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:10533",
+      "label": "viral pneumonia",
+      "description": "A pneumonia described as an inflammatory illness of the lung commonly caused by viruses such as influenza virus, parainfluenza, adenovirus, rhinovirus, herpes simplex virus, respiratory syncytial virus, hantavirus, and cytomegalovirus.",
+      "synonyms": [],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0111969",
+      "label": "immunodeficiency 39",
+      "description": "A primary immunodeficiency disease characterized by impaired interferon I and III production in response to influenza virus infection that has_material_basis_in homozygous or compond heterozygous mutation in the IRF7 gene on chromosome 11p15.5.",
+      "synonyms": [
+        "IMD39"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:10459",
+      "label": "common cold",
+      "description": "An upper respiratory tract disease which involves inflammation of the mucous membranes of the nose, throat, eyes, and eustachian tubes with watery then purulent discharge. This is an acute contagious disease caused by rhinoviruses, human parainfluenza viruses, human respiratory syncytial virus, influenza viruses, adenoviruses, enteroviruses, or metapneumovirus.",
+      "synonyms": [
+        "Acute viral rhinopharyngitis",
+        "Nasopharyngitis - acute",
+        "Nasopharyngitis, acute",
+        "acute coryza",
+        "acute nasopharyngitis",
+        "acute rhinitis",
+        "rhino-sinusitis"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:9395",
+      "label": "croup",
+      "description": "A respiratory system infectious disease that involves inflammation, edema, and subsequent obstruction of the larynx, trachea, and bronchi. The disease is caused by viruses, bacteria, allergies and inhaled irritants. It is marked by episodes of difficult breathing and hoarse metallic cough in infants and young children. Croup is caused by parainfluenza virus (types 1 and 2), Influenza A and B viruses, Measles virus, adenovirus, respiratory syncytial virus, Staphylococcus and Streptococcus.",
+      "synonyms": [
+        "Croup syndrome",
+        "Laryngotracheobronchitis",
+        "acute Obstructive Laryngitis",
+        "acute laryngotracheobronchitis"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "NCBITaxon:11320",
+      "label": "Influenza A virus",
+      "description": "",
+      "synonyms": [],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:2275",
+      "label": "pharyngitis",
+      "description": "An upper respiratory tract disease involving inflammation of the throat or pharynx resulting from bacterial, viral, fungal infections or irritants like pollutants or chemical substances and smoking. The infection is often referred to as sore throat. The symptoms include pain during swallowing, enlarged tonsils coated with a white discharge, runny nose, cough and slight fever.",
+      "synonyms": [
+        "Inflamed throat",
+        "Persistent sore throat",
+        "Pharyngeal disorder",
+        "Pharyngitis - acute",
+        "Sore throat - chronic",
+        "acute pharyngitis",
+        "acute sore throat",
+        "chronic pharyn/nasopharyngitis",
+        "chronic pharyngitis and nasopharyngitis",
+        "chronic pharyngitis",
+        "chronic sore throat"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:10883",
+      "label": "herpangina",
+      "description": "A viral infectious disease that results in infection located in mouth, has_material_basis_in Human coxsackievirus A16, Human enterovirus 71, group B coxsackievirus, or echoviruses, which are transmitted by ingestion of food contaminated with feces, transmitted by contact with pharyngeal secretions, or transmitted by droplet spread of oronasal secretions. The infection has symptom fever, has symptom sore throat, and has symptom lesions in the back area of the mouth, particularly the soft palate or tonsillar pillars.",
+      "synonyms": [
+        "Vesicular pharyngitis"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0081451",
+      "label": "PFAPA syndrome",
+      "description": "An autoimmune disease that is characterized by recurrent febrile episodes associated with aphthous stomatitis, pharyngitis and cervical adenitis.",
+      "synonyms": [
+        "Marshall syndrome with periodic fever",
+        "Periodic fever-aphtous stomatitis-pharyngitis-adenopathy syndrome"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:13924",
+      "label": "necrotizing ulcerative gingivitis",
+      "description": "",
+      "synonyms": [
+        "Angina - Vincents",
+        "Vincent angina",
+        "Vincent's angina - pharyngitis",
+        "Vincent's angina",
+        "Vincent's disease",
+        "Vincent's infection, any site",
+        "acute necrotising ulcerative gingivitis",
+        "acute necrotising ulcerative gingivostomatitis",
+        "acute necrotizing ulcerative gingivitis",
+        "acute necrotizing ulcerative gingivostomatitis",
+        "acute ulceromembranous gingivitis",
+        "early acute necrotising gingivitis",
+        "trench mouth",
+        "ANUG"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:11337",
+      "label": "Lemierre's syndrome",
+      "description": "A commensal bacterial infectious disease that is characterized by systemic sepsis, ulcerative or necrotic lesions and multisystem abscesses caused by Fusobacterium necrophorum. The disease often first presents as a severe tonsillitis or pharyngitis with high-grade fever and chills together with leukocytosis, cervical pain and neck swelling.",
+      "synonyms": [
+        "Lemierre syndrome",
+        "human necrobacillosis",
+        "postanginal sepsis"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:552",
+      "label": "pneumonia",
+      "description": "A lung disease that involves lung parenchyma or alveolar inflammation and abnormal alveolar filling with fluid (consolidation and exudation). It results from a variety of causes including infection with bacteria, viruses, fungi or parasites, and chemical or physical injury to the lungs. It is accompanied by fever, chills, cough, and difficulty in breathing.",
+      "synonyms": [
+        "acute pneumonia"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:3241",
+      "label": "lipid pneumonia",
+      "description": "An aspiration pneumonitis resulting from the aspiration of lipids. It is the result of a foreign body-type reaction to the presence of lipid material within the lung parenchyma. It is caused by inhalation of nasal drops with oil base or cosmetic oil and aspiration of mineral oil when used as a laxative agent.",
+      "synonyms": [
+        "Exogenous lipoid pneumonia",
+        "Lipoid pneumonitis"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:5870",
+      "label": "eosinophilic pneumonia",
+      "description": "A pneumonia in which certain type of white blood cell called an eosinophil accumulates in the lung. These cells cause disruption of the normal air spaces (alveoli) where oxygen is extracted from the atmosphere. It is caused by certain medications or environmental triggers, parasitic infections, and cancer. The most common symptoms include cough, fever, difficulty breathing, and sweating at night.",
+      "synonyms": [
+        "Pneumonia, eosinophilic"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:873",
+      "label": "anaerobic pneumonia",
+      "description": "An aspiration pneumonia caused by anaerobic bacteria like Bacteroides fragilis, Peptostreptococcus, anaerobic streptococci, Fusobacterium species (Fusobacterium nucleatum and Fusobacterium necrophoram). Lung abscess and empyema are diagnosed in this disease.",
+      "synonyms": [
+        "pneumonia due to anaerobes"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:874",
+      "label": "bacterial pneumonia",
+      "description": "A pneumonia involving inflammation of the lungs caused by bacteria.",
+      "synonyms": [
+        "Pneumonia due to other gram-negative bacteria",
+        "gram-negative pneumonia"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0040083",
+      "label": "Chlamydia pneumonia",
+      "description": "A bacterial pneumonia has_material_basis_in Chlamydia pneumoniae.",
+      "synonyms": [],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0040084",
+      "label": "Streptococcus pneumonia",
+      "description": "A bacterial pneumonia has_material_basis_in Streptococcus pneumoniae.",
+      "synonyms": [],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:2326",
+      "label": "gastroenteritis",
+      "description": "A gastrointestinal system infectious disease that involves inflammation of the lining of the stomach and small and large intestines, which is caused by viruses, bacteria, or parasites. Chemicals and drugs also cause gastroenteritis. The symptoms include diarrhea, loss of appetite, nausea, vomiting, cramps, and discomfort in the abdomen.",
+      "synonyms": [
+        "cholera morbus",
+        "infectious colitis, enteritis and gastroenteritis"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "SYMP:0019159",
+      "label": "gastroenteritis",
+      "description": "doid/symp duplicate",
+      "synonyms": [],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:4031",
+      "label": "eosinophilic gastroenteritis",
+      "description": "",
+      "synonyms": [],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "SYMP:0000036",
+      "label": "hemorrhagic gastroenteritis",
+      "description": "",
+      "synonyms": [
+        "haemorrhagic gastroenteritis"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "SYMP:0000677",
+      "label": "acute gastroenteritis",
+      "description": "",
+      "synonyms": [],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:1733",
+      "label": "cryptosporidiosis",
+      "description": "A coccidiosis that involves a parasitic protozoan infection of the intestine of humans and a wide range of animals caused by Cryptosporidium species, through contaminated water and food, The symptoms include watery diarrhea, dehydration, weight loss, abdominal pain, fever, nausea and vomiting. Cryptosporidium infections have also been found in other digestive tract organs, the lungs, and conjunctiva. Immunocompromised persons are at greater risk of developing the infection.",
+      "synonyms": [
+        "Cryptosporidial gastroenteritis",
+        "Infection by Cryptosporidium",
+        "intestinal cryptosporidiosis"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:12385",
+      "label": "shigellosis",
+      "description": "A primary bacterial infectious disease that results_in infection located_in epithelium of colon, has_material_basis_in Shigella boydii, has_material_basis_in Shigella dysenteriae, has_material_basis_in Shigella flexneri, or has_material_basis_in Shigella sonnei, which produce toxins that can attack the lining of the large intestine, causing swelling, ulcers on the intestinal wall, and bloody diarrhea. The bacteria are transmitted_by ingestion of food and water contaminated with feces.",
+      "synonyms": [
+        "Shigella boydii infectious disease",
+        "Shigella flexneri infectious disease",
+        "Shigella gastroenteritis",
+        "Shigella sonnei infectious disease",
+        "bacillary dysentery"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0081168",
+      "label": "HMG-CoA synthase 2 deficiency",
+      "description": "An amino acid metabolic disorder that is characterized clinically by episodes of decompensation (often associated with gastroenteritis or fasting) that present with vomiting, lethargy, hepatomegaly, non ketotic hypoglycemia and, in rare cases, coma and that has_material_basis_in mutation in the HMGCS2 gene on chromosome 1p12.",
+      "synonyms": [
+        "3-hydroxy-3-methylglutaryl-CoA synthase-2 deficiency"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:6364",
+      "label": "migraine",
+      "description": "Xref MGI. OMIM mapping confirmed by DO. [SN].",
+      "synonyms": [
+        "migraine disorder",
+        "migraine variant",
+        "migraine with or without aura"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0060178",
+      "label": "familial hemiplegic migraine",
+      "description": "Xref MGI.",
+      "synonyms": [],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:10024",
+      "label": "migraine with aura",
+      "description": "Xref MGI.",
+      "synonyms": [
+        "classic migraine"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:12783",
+      "label": "migraine without aura",
+      "description": "Xref MGI.",
+      "synonyms": [
+        "common migraine"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0111181",
+      "label": "familial hemiplegic migraine 1",
+      "description": "A familial hemiplegic migraine that is commonly associated with cerebellar degeneration and has_material_basis_in heterozygous mutation in CACNA1A on 19p13.",
+      "synonyms": [
+        "familial hemiplegic migraine1 with progressive cerebellar ataxia",
+        "FHM1",
+        "MHP1"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0111182",
+      "label": "familial hemiplegic migraine 2",
+      "description": "A familial hemiplegic migraine that has_material_basis_in heterozygous mutation in ATP1A2 on 1q23.2.",
+      "synonyms": [
+        "Familial hemiplegic migraine-2",
+        "FHM2",
+        "MHP2"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0111183",
+      "label": "familial hemiplegic migraine 3",
+      "description": "A familial hemiplegic migraine that has_material_basis_in heterozygous mutation in SCN1A on 2q24.3.",
+      "synonyms": [
+        "FHM3",
+        "MHP3"
+      ],
+      "source": "ols4-doid"
+    },
+    {
+      "id": "DOID:0060753",
+      "label": "familial temporal lobe epilepsy 4",
+      "description": "A temporal lobe epilepsy characterized by autosomal dominant inheritance of occipitotemporal lobe epilepsy and migraine with visual aura and that has_material_basis_in variation in the chromosome region 9q21-q22.",
+      "synonyms": [
+        "occipitotemporal lobe epilepsy and migraine with aura",
+        "EPOLM",
+        "ETL4"
+      ],
+      "source": "ols4-doid"
+    }
+  ]
 }
