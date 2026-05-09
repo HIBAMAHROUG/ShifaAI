@@ -1,127 +1,110 @@
-# 🏥 SHIFAAAI
+# SHIFAAAI
 ## AI-Powered Medical Symptom Analysis Platform
 
-<p align="center">
-  <img src="https://img.shields.io/badge/version-3.0.0-blue.svg">
-  <img src="https://img.shields.io/badge/python-3.10+-green.svg">
-  <img src="https://img.shields.io/badge/Flask-2.3-red.svg">
-  <img src="https://img.shields.io/badge/AI-NLP-purple.svg">
-  <img src="https://img.shields.io/badge/license-MIT-yellow.svg">
-</p>
+![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)
+![Python](https://img.shields.io/badge/python-3.10+-green.svg)
+![Flask](https://img.shields.io/badge/Flask-2.3-red.svg)
+![License](https://img.shields.io/badge/license-MIT-yellow.svg)
 
 ---
 
-# 📌 Overview
+# Overview
 
-**SHIFAAAI** is an AI-powered medical analysis platform that combines:
+SHIFAAAI is an artificial intelligence platform designed to analyze medical symptoms written in natural language and predict possible diseases using Natural Language Processing (NLP) and Machine Learning techniques.
 
-- 🧠 Natural Language Processing (NLP)
-- 🤖 Machine Learning
-- 🩺 Medical symptom analysis
-- 🌐 REST API architecture
-
-The platform analyzes symptoms written in natural language and predicts potential diseases with confidence scores and medical recommendations.
-
-Example:
-
-> “I have a strong fever, dry cough, and fatigue for 3 days.”
-
-The system processes the sentence using:
-- lexical analysis,
+The application processes user input through several stages including:
 - tokenization,
+- lexical analysis,
 - syntax analysis,
 - symptom extraction,
-- AI prediction models.
+- prediction generation.
+
+The objective of the project is to combine AI technologies with healthcare assistance in a simple and interactive environment.
 
 ---
 
-# ✨ Features
+# Main Features
 
-## 🔤 NLP & Lexical Analysis
-
-- Tokenization
-- Symptom extraction
+## Lexical Analysis
+- Tokenization of text
+- Symptom detection
 - Negation detection
-- Temporal expression analysis
-- Severity/intensity detection
+- Intensity detection
+- Temporal expression extraction
 
-Example:
-- “no fever”
-- “very strong headache”
-- “since yesterday”
+Examples:
+- "no fever"
+- "strong headache"
+- "since yesterday"
 
 ---
 
-## 📐 Syntax Analysis
-
+## Syntax Analysis
 - POS Tagging
 - Sentence structure analysis
-- Grammar visualization
-- Lexical categorization
+- Word classification
+- Grammatical relation analysis
 
 ---
 
-## 🩺 AI Medical Prediction
-
-The system predicts diseases such as:
-
+## Disease Prediction
+The system predicts possible diseases such as:
 - Influenza
 - Bronchitis
 - Angina
 - Gastroenteritis
 - Respiratory infections
 
-Includes:
-- Confidence score
-- Probability estimation
-- Personalized recommendations
+Each prediction includes:
+- confidence score,
+- probability estimation,
+- medical recommendation.
 
 ---
 
-# 🧠 AI Pipeline
+# AI Processing Pipeline
 
 ```text
-User Symptoms
-      ↓
+User Input
+    ↓
 Tokenization
-      ↓
+    ↓
 Lexical Analysis
-      ↓
+    ↓
 Syntax Analysis
-      ↓
+    ↓
 Feature Extraction
-      ↓
+    ↓
 Machine Learning Model
-      ↓
+    ↓
 Disease Prediction
 ```
 
 ---
 
-# 🏗️ Project Architecture
+# Project Architecture
 
 ```text
-Frontend (HTML/CSS/JS)
-        ↓
+Frontend (HTML / CSS / JavaScript)
+            ↓
 Flask REST API
-        ↓
+            ↓
 NLP Processing Layer
-        ↓
-ML Prediction Engine
-        ↓
+            ↓
+Machine Learning Engine
+            ↓
 SQLite Database
 ```
 
 ---
 
-# 💻 Technologies Used
+# Technologies Used
 
 ## Frontend
 - HTML5
 - CSS3
 - JavaScript ES6
 - Bootstrap 5
-- Font Awesome
 
 ## Backend
 - Python 3.10+
@@ -136,7 +119,7 @@ SQLite Database
 
 ---
 
-# 📁 Project Structure
+# Project Structure
 
 ```text
 SHIFAAAI/
@@ -159,9 +142,9 @@ SHIFAAAI/
 
 ---
 
-# ⚙️ Installation
+# Installation
 
-## Clone Repository
+## Clone the Repository
 
 ```bash
 git clone https://github.com/HIBAMAHROUG/ShifaaAI.git
@@ -173,12 +156,14 @@ cd ShifaaAI
 ## Create Virtual Environment
 
 ### Windows
+
 ```bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
-### Linux/Mac
+### Linux / Mac
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
@@ -194,35 +179,54 @@ pip install -r requirements.txt
 
 ---
 
-## Run Backend
+## Create Database
+
+```bash
+cd backend
+python create_database.py --force
+```
+
+---
+
+## Train AI Model
+
+```bash
+python train.py
+```
+
+---
+
+# Running the Application
+
+## Start Backend
 
 ```bash
 cd backend
 python app.py
 ```
 
-Server:
+Backend server:
 ```text
 http://127.0.0.1:5000
 ```
 
 ---
 
-## Run Frontend
+## Start Frontend
 
 ```bash
 cd frontend
 python -m http.server 3000
 ```
 
-Application:
+Frontend:
 ```text
 http://localhost:3000
 ```
 
 ---
 
-# 🔌 API Endpoint
+# API Endpoint
 
 ## Predict Symptoms
 
@@ -250,7 +254,7 @@ POST /api/predict/
 
 ---
 
-# 🧪 Example Inputs
+# Example Inputs
 
 ```text
 I have a strong fever and dry cough.
@@ -260,31 +264,40 @@ I feel nauseous and have stomach pain.
 
 ---
 
-# 🚀 Future Improvements
+# Current Limitations
 
-- Deep Learning integration
-- Better migraine detection
-- Improved COVID/Flu differentiation
-- Arabic language support
-- Medical chatbot integration
-- Real-time medical APIs
+- Possible confusion between COVID-19 and influenza symptoms
+- Migraine detection is not always accurate
+- Limited medical dataset
+- Predictions depend on user symptom descriptions
 
 ---
 
-# ⚠️ Disclaimer
+# Future Improvements
 
-This project is for:
+- Improve prediction accuracy
+- Add deep learning models
+- Add multilingual support
+- Integrate external medical APIs
+- Improve symptom classification
+- Expand disease dataset
+
+---
+
+# Disclaimer
+
+This project is intended for:
 - educational purposes,
 - AI experimentation,
 - NLP research.
 
-It is NOT intended to replace professional medical diagnosis.
+It does not replace professional medical diagnosis or healthcare services.
 
 ---
 
-# 👩‍💻 Author
+# Author
 
-## Hiba Zaroui
+Hiba Zaroui  
 Software Engineering Student  
 AI & NLP Enthusiast
 
@@ -293,12 +306,6 @@ https://github.com/HIBAMAHROUG
 
 ---
 
-# 📜 License
+# License
 
 This project is licensed under the MIT License.
-
----
-
-# ❤️ SHIFAAAI
-
-> “Artificial Intelligence for Better Healthcare”
