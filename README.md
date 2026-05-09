@@ -1,5 +1,5 @@
 # SHIFAAAI
-## AI-Powered Medical Symptom Analysis Platform
+## Plateforme d’Analyse Médicale par Intelligence Artificielle
 
 ![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-green.svg)
@@ -8,97 +8,98 @@
 
 ---
 
-# Overview
+# Présentation
 
-SHIFAAAI is an artificial intelligence platform designed to analyze medical symptoms written in natural language and predict possible diseases using Natural Language Processing (NLP) and Machine Learning techniques.
+SHIFAAAI est une plateforme basée sur l’intelligence artificielle permettant d’analyser des symptômes médicaux rédigés en langage naturel afin de prédire des maladies probables grâce aux techniques de Traitement du Langage Naturel (NLP) et de Machine Learning.
 
-The application processes user input through several stages including:
-- tokenization,
-- lexical analysis,
-- syntax analysis,
-- symptom extraction,
-- prediction generation.
+L’application traite les données utilisateurs à travers plusieurs étapes :
+- tokenisation,
+- analyse lexicale,
+- analyse syntaxique,
+- extraction des symptômes,
+- génération de prédictions médicales.
 
-The objective of the project is to combine AI technologies with healthcare assistance in a simple and interactive environment.
-
----
-
-# Main Features
-
-## Lexical Analysis
-- Tokenization of text
-- Symptom detection
-- Negation detection
-- Intensity detection
-- Temporal expression extraction
-
-Examples:
-- "no fever"
-- "strong headache"
-- "since yesterday"
+L’objectif du projet est de combiner les technologies de l’IA avec l’assistance médicale dans un environnement interactif et moderne.
 
 ---
 
-## Syntax Analysis
+# Fonctionnalités Principales
+
+## Analyse Lexicale
+- Tokenisation du texte
+- Détection automatique des symptômes
+- Détection des négations
+- Analyse des intensificateurs
+- Extraction des expressions temporelles
+
+Exemples :
+- « pas de fièvre »
+- « forte migraine »
+- « depuis hier »
+
+---
+
+## Analyse Syntaxique
 - POS Tagging
-- Sentence structure analysis
-- Word classification
-- Grammatical relation analysis
+- Analyse de la structure des phrases
+- Classification grammaticale des mots
+- Analyse des relations syntaxiques
 
 ---
 
-## Disease Prediction
-The system predicts possible diseases such as:
-- Influenza
-- Bronchitis
-- Angina
-- Gastroenteritis
-- Respiratory infections
+## Prédiction des Maladies
 
-Each prediction includes:
-- confidence score,
-- probability estimation,
-- medical recommendation.
+Le système peut prédire plusieurs maladies comme :
+- Grippe
+- Bronchite
+- Angine
+- Gastro-entérite
+- Infections respiratoires
+
+Chaque prédiction contient :
+- un score de confiance,
+- une estimation de probabilité,
+- une recommandation médicale.
 
 ---
 
-# AI Processing Pipeline
+# Pipeline de Traitement IA
 
 ```text
-User Input
-    ↓
-Tokenization
-    ↓
-Lexical Analysis
-    ↓
-Syntax Analysis
-    ↓
-Feature Extraction
-    ↓
-Machine Learning Model
-    ↓
-Disease Prediction
+Texte Utilisateur
+        ↓
+Tokenisation
+        ↓
+Analyse Lexicale
+        ↓
+Analyse Syntaxique
+        ↓
+Extraction des Caractéristiques
+        ↓
+Modèle de Machine Learning
+        ↓
+Prédiction Médicale
 ```
 
 ---
 
-# Project Architecture
+# Architecture du Projet
 
 ```text
 Frontend (HTML / CSS / JavaScript)
-            ↓
-Flask REST API
-            ↓
-NLP Processing Layer
-            ↓
-Machine Learning Engine
-            ↓
-SQLite Database
+                ↓
+API REST Flask
+                ↓
+Couche NLP
+                ↓
+Moteur de Machine Learning
+                ↓
+Base de Données SQLite
 ```
 
 ---
 
-# Technologies Used
+# Technologies Utilisées
 
 ## Frontend
 - HTML5
@@ -119,7 +120,7 @@ SQLite Database
 
 ---
 
-# Project Structure
+# Structure du Projet
 
 ```text
 SHIFAAAI/
@@ -144,7 +145,7 @@ SHIFAAAI/
 
 # Installation
 
-## Clone the Repository
+## Cloner le Dépôt
 
 ```bash
 git clone https://github.com/HIBAMAHROUG/ShifaaAI.git
@@ -153,7 +154,7 @@ cd ShifaaAI
 
 ---
 
-## Create Virtual Environment
+## Créer un Environnement Virtuel
 
 ### Windows
 
@@ -171,7 +172,7 @@ source venv/bin/activate
 
 ---
 
-## Install Dependencies
+## Installer les Dépendances
 
 ```bash
 pip install -r requirements.txt
@@ -179,7 +180,7 @@ pip install -r requirements.txt
 
 ---
 
-## Create Database
+## Créer la Base de Données
 
 ```bash
 cd backend
@@ -188,7 +189,7 @@ python create_database.py --force
 
 ---
 
-## Train AI Model
+## Entraîner le Modèle IA
 
 ```bash
 python train.py
@@ -196,116 +197,116 @@ python train.py
 
 ---
 
-# Running the Application
+# Exécution de l’Application
 
-## Start Backend
+## Lancer le Backend
 
 ```bash
 cd backend
 python app.py
 ```
 
-Backend server:
+Serveur backend :
 ```text
 http://127.0.0.1:5000
 ```
 
 ---
 
-## Start Frontend
+## Lancer le Frontend
 
 ```bash
 cd frontend
 python -m http.server 3000
 ```
 
-Frontend:
+Application :
 ```text
 http://localhost:3000
 ```
 
 ---
 
-# API Endpoint
+# Endpoint API
 
-## Predict Symptoms
+## Analyse des Symptômes
 
 ```http
 POST /api/predict/
 ```
 
-### Example Request
+### Exemple de Requête
 
 ```json
 {
-  "text": "fever and cough for 3 days"
+  "text": "fièvre et toux depuis 3 jours"
 }
 ```
 
-### Example Response
+### Exemple de Réponse
 
 ```json
 {
   "success": true,
-  "predicted_disease": "Influenza",
+  "predicted_disease": "Grippe",
   "confidence": 85
 }
 ```
 
 ---
 
-# Example Inputs
+# Exemples de Tests
 
 ```text
-I have a strong fever and dry cough.
-I have chest pain and difficulty breathing.
-I feel nauseous and have stomach pain.
+J’ai une forte fièvre et une toux sèche.
+J’ai une douleur dans la poitrine et du mal à respirer.
+Je ressens des nausées et des douleurs abdominales.
 ```
 
 ---
 
-# Current Limitations
+# Limites Actuelles
 
-- Possible confusion between COVID-19 and influenza symptoms
-- Migraine detection is not always accurate
-- Limited medical dataset
-- Predictions depend on user symptom descriptions
-
----
-
-# Future Improvements
-
-- Improve prediction accuracy
-- Add deep learning models
-- Add multilingual support
-- Integrate external medical APIs
-- Improve symptom classification
-- Expand disease dataset
+- Possibles confusions entre le COVID-19 et la grippe
+- Détection des migraines encore limitée
+- Dataset médical restreint
+- Les résultats dépendent de la qualité des symptômes saisis
 
 ---
 
-# Disclaimer
+# Améliorations Futures
 
-This project is intended for:
-- educational purposes,
-- AI experimentation,
-- NLP research.
-
-It does not replace professional medical diagnosis or healthcare services.
+- Amélioration de la précision des prédictions
+- Intégration de modèles Deep Learning
+- Support multilingue
+- Intégration d’APIs médicales externes
+- Extension du dataset médical
+- Optimisation de l’analyse NLP
 
 ---
 
-# Author
+# Avertissement
+
+Ce projet est destiné :
+- à des fins éducatives,
+- à l’expérimentation en intelligence artificielle,
+- à la recherche en NLP.
+
+Il ne remplace en aucun cas un diagnostic médical professionnel.
+
+---
+
+# Auteur
 
 Hiba Zaroui  
-Software Engineering Student  
-AI & NLP Enthusiast
+Étudiante en Génie Logiciel  
+Passionnée par l’IA et le NLP
 
-GitHub:
+GitHub :
 https://github.com/HIBAMAHROUG
 
 ---
 
-# License
+# Licence
 
-This project is licensed under the MIT License.
+Ce projet est sous licence MIT.
