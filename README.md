@@ -216,8 +216,7 @@ http://127.0.0.1:5000
 ## Lancer le Frontend
 
 ```bash
-cd frontend
-python -m http.server 3000
+python serve_frontend.py
 ```
 
 Application :

@@ -667,7 +667,13 @@ function ShifaaAI() {
       setIsAnalyzing(true);
       setApiError("");
 
-      const response = await fetch("http://127.0.0.1:5000/api/analyze", {
+      const apiBaseUrl = (typeof window !== "undefined" && window.__SHIFAAI_API_BASE_URL)
+        ? String(window.__SHIFAAI_API_BASE_URL).replace(/\/$/, "")
+        : (typeof window !== "undefined" && window.location && window.location.protocol !== "file:")
+          ? `${window.location.protocol}//${window.location.hostname}:5000`
+          : "http://127.0.0.1:5000";
+
+      const response = await fetch(`${apiBaseUrl}/api/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
@@ -686,7 +692,7 @@ function ShifaaAI() {
 
       let topDiseases = [];
       try {
-        const extResp = await fetch("http://127.0.0.1:5000/api/external/disease-info", {
+        const extResp = await fetch(`${apiBaseUrl}/api/external/disease-info`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ disease: searchQuery }),

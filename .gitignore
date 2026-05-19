@@ -28,3 +28,7 @@ Homestead.json
 .env.production
 .phpactor.json
 auth.json
+
+# Virtualenvs created locally — keep out of repo
+.venv/
+.venv-1/

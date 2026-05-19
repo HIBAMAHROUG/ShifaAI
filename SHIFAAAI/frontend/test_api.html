@@ -43,6 +43,12 @@
     </div>
 
     <script>
+        const API_BASE_URL = window.__SHIFAAI_API_BASE_URL
+            ? String(window.__SHIFAAI_API_BASE_URL).replace(/\/$/, '')
+            : (window.location && window.location.protocol !== 'file:'
+                ? `${window.location.protocol}//${window.location.hostname}:5000`
+                : 'http://127.0.0.1:5000');
+
         async function analyzeSymptoms() {
             const symptoms = document.getElementById('symptoms').value.trim();
             const resultDiv = document.getElementById('result');
@@ -59,7 +65,7 @@
             showResult('🔄 Analyse en cours...', 'loading');
             
             try {
-                const response = await fetch('http://127.0.0.1:5000/api/analyze', {
+                const response = await fetch(`${API_BASE_URL}/api/analyze`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -129,12 +135,12 @@
         // Test API health on page load
         window.addEventListener('load', async () => {
             try {
-                const response = await fetch('http://127.0.0.1:5000/health');
+                const response = await fetch(`${API_BASE_URL}/health`);
                 const data = await response.json();
                 console.log('✅ Backend API is healthy:', data);
             } catch (error) {
                 console.error('❌ Backend API not accessible:', error);
-                showResult('❌ Le backend n\'est pas accessible. Assurez-vous que le serveur Flask est démarré sur http://127.0.0.1:5000', 'error');
+                showResult(`❌ Le backend n'est pas accessible. Assurez-vous que le serveur Flask est démarré sur ${API_BASE_URL}`, 'error');
             }
         });
     </script>

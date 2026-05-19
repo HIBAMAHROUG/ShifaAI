@@ -1,7 +1,21 @@
 // api.js - Version améliorée
 
+const DEFAULT_API_BASE_URL = "http://127.0.0.1:5000";
+
+function getApiBaseUrl() {
+    if (typeof window !== "undefined" && window.__SHIFAAI_API_BASE_URL) {
+        return String(window.__SHIFAAI_API_BASE_URL).replace(/\/$/, "");
+    }
+
+    if (typeof window !== "undefined" && window.location && window.location.protocol !== "file:") {
+        return `${window.location.protocol}//${window.location.hostname}:5000`;
+    }
+
+    return DEFAULT_API_BASE_URL;
+}
+
 // Utiliser l'API Flask réelle
-const API_URL = "http://127.0.0.1:5000/api/analyze";
+const API_URL = `${getApiBaseUrl()}/api/analyze`;
 
 // Configuration de l'API
 const API_CONFIG = {
@@ -436,7 +450,7 @@ function handleApiError(error) {
     
     if (errorMessage.includes("Failed to fetch") || errorMessage.includes("NetworkError")) {
         showToast("❌ Impossible de contacter le serveur. Vérifiez que le backend est démarré.", "error");
-        console.error("💡 Astuce : Assurez-vous que le serveur Flask est lancé sur http://127.0.0.1:5000");
+        console.error(`💡 Astuce : Assurez-vous que le serveur Flask est lancé sur ${getApiBaseUrl()}`);
     } else if (errorMessage.includes("timeout") || errorMessage.includes("Délai")) {
         showToast("⏱️ Le serveur met trop de temps à répondre. Réessayez plus tard.", "error");
     } else if (errorMessage.includes("HTTP 500")) {
