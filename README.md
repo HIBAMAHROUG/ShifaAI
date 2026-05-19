@@ -101,10 +101,3 @@ Use conventional commits: `feat`, `fix`, `docs`, `refactor`, `chore`. Please ope
 
 ---
 
-## License
-
-MIT — see LICENSE file.
-
----
-
-Generated: concise README with architecture and pipeline graphs.
