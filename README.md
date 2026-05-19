@@ -104,27 +104,6 @@ Prédiction Médicale
 
 ---
 
-# Structure du Projet
-
-```text
-SHIFAAAI/
-│
-├── backend/
-│   ├── app.py
-│   ├── train.py
-│   ├── create_database.py
-│   ├── models/
-│   └── data/
-│
-├── frontend/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-│
-├── README.md
-└── LICENSE
-```
-
 ---
 
 # Installation
