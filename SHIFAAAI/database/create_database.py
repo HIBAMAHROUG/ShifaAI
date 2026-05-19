@@ -1,4 +1,4 @@
-# create_database.py - Script de création de la base de données SHIFAAAI
+"""Creates and initializes the SHIFAAAI SQLite database."""
 
 import sqlite3
 import os
@@ -8,58 +8,41 @@ from datetime import datetime
 import hashlib
 import secrets
 
-# =========================================================
-# CONFIGURATION
-# =========================================================
-
 DB_NAME = "shifaa.db"
 SCHEMA_FILE = "schema.sql"
 BACKUP_DIR = "backups"
 DATA_DIR = "data"
 
-# =========================================================
-# LOGGING
-# =========================================================
-
 class Logger:
-    """Gestionnaire de logs simple"""
-    
     @staticmethod
     def info(message):
-        print(f"ℹ️ {message}")
+        print(f"INFO: {message}")
     
     @staticmethod
     def success(message):
-        print(f"✅ {message}")
+        print(f"SUCCESS: {message}")
     
     @staticmethod
     def error(message):
-        print(f"❌ {message}")
+        print(f"ERROR: {message}")
     
     @staticmethod
     def warning(message):
-        print(f"⚠️ {message}")
+        print(f"WARNING: {message}")
     
     @staticmethod
     def progress(message):
-        print(f"🔄 {message}")
+        print(f"PROGRESS: {message}")
 
 logger = Logger()
 
-# =========================================================
-# GESTION DES RÉPERTOIRES
-# =========================================================
-
 def ensure_directories():
-    """Créer les répertoires nécessaires"""
     try:
-        # Créer le dossier de sauvegarde
         backup_path = Path(BACKUP_DIR)
         if not backup_path.exists():
             backup_path.mkdir(parents=True)
             logger.info(f"Dossier de sauvegarde créé: {BACKUP_DIR}")
         
-        # Créer le dossier data
         data_path = Path(DATA_DIR)
         if not data_path.exists():
             data_path.mkdir(parents=True)
@@ -70,12 +53,7 @@ def ensure_directories():
         logger.error(f"Erreur création dossiers: {e}")
         return False
 
-# =========================================================
-# SAUVEGARDE DE L'ANCIENNE BASE
-# =========================================================
-
 def backup_existing_database():
-    """Sauvegarder l'ancienne base si elle existe"""
     db_path = Path(DB_NAME)
     
     if db_path.exists():
@@ -93,12 +71,7 @@ def backup_existing_database():
     
     return True
 
-# =========================================================
-# SCHÉMA PAR DÉFAUT
-# =========================================================
-
 def get_default_schema():
-    """Retourner le schéma SQL par défaut"""
     return """
 -- =========================================================
 -- SHIFAAAI - SCHEMA DE BASE DE DONNÉES
@@ -210,12 +183,7 @@ CREATE INDEX IF NOT EXISTS idx_analyses_created_at ON analyses(created_at);
 CREATE INDEX IF NOT EXISTS idx_predictions_created_at ON predictions(created_at);
 """
 
-# =========================================================
-# VALIDATION ET CRÉATION DU SCHÉMA
-# =========================================================
-
 def get_schema_content():
-    """Récupérer le contenu du schéma SQL"""
     schema_path = Path(SCHEMA_FILE)
     
     if schema_path.exists():
@@ -231,7 +199,6 @@ def get_schema_content():
     return get_default_schema()
 
 def create_default_schema_file():
-    """Créer un fichier schema.sql par défaut"""
     try:
         with open(SCHEMA_FILE, "w", encoding="utf-8") as f:
             f.write(get_default_schema())
@@ -241,12 +208,7 @@ def create_default_schema_file():
         logger.error(f"Erreur création {SCHEMA_FILE}: {e}")
         return False
 
-# =========================================================
-# EXÉCUTION DU SCHÉMA
-# =========================================================
-
 def execute_schema(conn, schema_content):
-    """Exécuter le schéma SQL"""
     try:
         cursor = conn.cursor()
         cursor.executescript(schema_content)
@@ -260,12 +222,7 @@ def execute_schema(conn, schema_content):
         logger.error(f"Erreur inattendue: {e}")
         return False
 
-# =========================================================
-# VÉRIFICATION DE LA BASE
-# =========================================================
-
 def verify_database(conn):
-    """Vérifier que toutes les tables ont été créées"""
     cursor = conn.cursor()
     
     expected_tables = ['users', 'symptoms', 'diseases', 'disease_symptoms', 'analyses', 'predictions', 'feedback']
@@ -285,7 +242,6 @@ def verify_database(conn):
         logger.warning(f"Tables manquantes: {', '.join(missing_tables)}")
         return False
     
-    # Vérifier les données
     cursor.execute("SELECT COUNT(*) FROM symptoms")
     symptom_count = cursor.fetchone()[0]
     logger.success(f"Symptômes: {symptom_count}")
@@ -296,25 +252,18 @@ def verify_database(conn):
     
     return True
 
-# =========================================================
-# STATISTIQUES DE LA BASE
-# =========================================================
-
 def show_database_stats(conn):
-    """Afficher les statistiques de la base"""
     cursor = conn.cursor()
     
     print("\n" + "=" * 50)
-    print("📊 STATISTIQUES DE LA BASE DE DONNÉES")
+    print("DATABASE STATISTICS")
     print("=" * 50)
     
-    # Taille du fichier
     if os.path.exists(DB_NAME):
         size_bytes = os.path.getsize(DB_NAME)
         size_mb = size_bytes / (1024 * 1024)
-        print(f"💾 Taille: {size_mb:.2f} MB")
+        print(f"Size: {size_mb:.2f} MB")
     
-    # Tables et enregistrements
     cursor.execute("""
         SELECT name FROM sqlite_master 
         WHERE type='table' AND name NOT LIKE 'sqlite_%'
@@ -326,28 +275,13 @@ def show_database_stats(conn):
     for (table_name,) in tables:
         cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
         count = cursor.fetchone()[0]
-        print(f"📋 {table_name}: {count} enregistrements")
+        print(f"{table_name}: {count} records")
     
     print("=" * 50 + "\n")
 
-# =========================================================
-# FONCTION PRINCIPALE
-# =========================================================
-
 def create_database(force: bool = False, quiet: bool = False):
-    """
-    Créer la base de données SHIFAAAI
-    
-    Args:
-        force: Forcer la recréation sans confirmation
-        quiet: Mode silencieux (moins de logs)
-    
-    Returns:
-        True si réussi, False sinon
-    """
     global logger
     if quiet:
-        # Remplacer le logger par une version silencieuse
         class QuietLogger:
             @staticmethod
             def info(message): pass
@@ -362,29 +296,24 @@ def create_database(force: bool = False, quiet: bool = False):
         logger = QuietLogger()
     
     print("\n" + "=" * 60)
-    print("🏥 SHIFAAAI - CRÉATION DE LA BASE DE DONNÉES")
+    print("SHIFAAAI - DATABASE CREATION")
     print("=" * 60 + "\n")
     
-    # Vérifier les prérequis
     if not ensure_directories():
         return False
     
-    # Sauvegarder l'ancienne base
     backup_existing_database()
     
-    # Vérifier/créer le fichier schema
     if not os.path.exists(SCHEMA_FILE):
         if not create_default_schema_file():
             return False
     
-    # Demander confirmation si la base existe
     if os.path.exists(DB_NAME) and not force:
-        response = input(f"⚠️ La base {DB_NAME} existe déjà. Voulez-vous la remplacer? (o/N): ")
+        response = input(f"Database {DB_NAME} already exists. Replace it? (o/N): ")
         if response.lower() != 'o':
             logger.info("Opération annulée")
             return False
     
-    # Supprimer l'ancienne base
     if os.path.exists(DB_NAME):
         try:
             os.remove(DB_NAME)
@@ -393,20 +322,16 @@ def create_database(force: bool = False, quiet: bool = False):
             logger.error(f"Impossible de supprimer: {e}")
             return False
     
-    # Créer la nouvelle base
     try:
         conn = sqlite3.connect(DB_NAME)
         logger.success(f"Connexion établie: {DB_NAME}")
         
-        # Activer les clés étrangères
         conn.execute("PRAGMA foreign_keys = ON")
         
-        # Exécuter le schéma
         schema_content = get_schema_content()
         if not execute_schema(conn, schema_content):
             return False
         
-        # Vérifier la base
         if verify_database(conn):
             logger.success("Vérification de la base réussie!")
             show_database_stats(conn)
@@ -426,12 +351,7 @@ def create_database(force: bool = False, quiet: bool = False):
             conn.close()
             logger.info("Connexion fermée")
 
-# =========================================================
-# TEST DE LA BASE
-# =========================================================
-
 def test_connection():
-    """Tester la connexion à la base"""
     try:
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
@@ -445,7 +365,7 @@ def test_connection():
         cursor = conn.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [row[0] for row in cursor.fetchall()]
-        print(f"\n📋 Tables disponibles: {', '.join(tables)}")
+        print(f"\nTables available: {', '.join(tables)}")
         conn.close()
         
         return True
@@ -453,22 +373,15 @@ def test_connection():
         logger.error(f"Test de connexion échoué: {e}")
         return False
 
-# =========================================================
-# INSERTION DE DONNÉES DE TEST
-# =========================================================
-
 def insert_test_data():
-    """Insérer des données de test dans la base"""
     try:
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         
-        # Vérifier si déjà des données
         cursor.execute("SELECT COUNT(*) FROM predictions")
         count = cursor.fetchone()[0]
         
         if count == 0:
-            # Insérer des prédictions de test
             test_predictions = [
                 ("fièvre toux fatigue", "Grippe", 85.5, '[{"disease": "Grippe", "confidence": 85.5}]'),
                 ("mal de gorge fièvre", "Angine", 78.2, '[{"disease": "Angine", "confidence": 78.2}]'),
@@ -489,10 +402,6 @@ def insert_test_data():
         logger.warning(f"Erreur insertion données test: {e}")
         return False
 
-# =========================================================
-# POINT D'ENTRÉE
-# =========================================================
-
 if __name__ == "__main__":
     import argparse
     
@@ -503,7 +412,6 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    # Créer la base
     success = create_database(force=args.force, quiet=args.quiet)
     
     if success:
@@ -512,10 +420,10 @@ if __name__ == "__main__":
         if args.test:
             insert_test_data()
         
-        print("\n✨ Base de données SHIFAAAI prête à l'emploi!")
-        print(f"📁 Fichier: {DB_NAME}")
-        print("💡 Utilisez 'sqlite3 shifaa.db' pour interagir avec la base")
-        print("💡 Pour les commandes SQL: '.tables' pour lister les tables, '.schema' pour le schéma")
+        print("\nBase de données SHIFAAAI prête à l'emploi")
+        print(f"Fichier: {DB_NAME}")
+        print("Use 'sqlite3 shifaa.db' to interact with the database")
+        print("Use '.tables' to list tables and '.schema' to inspect the schema")
     else:
-        print("\n❌ Échec de la création de la base de données")
+        print("\nDatabase creation failed")
         sys.exit(1)

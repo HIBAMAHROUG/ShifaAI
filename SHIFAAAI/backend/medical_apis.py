@@ -1,22 +1,16 @@
-# medical_apis.py - External Medical APIs Integration
+"""Handles external medical lookups for disease and drug enrichment."""
 
 import requests
-import json
-from typing import Dict, List, Optional
-import time
+from typing import Dict, List
 
 class MedicalAPIs:
-    """Integration with external medical APIs for enhanced disease information"""
-    
     # Disease Ontology API
     DISEASE_ONTOLOGY_BASE = "https://www.ebi.ac.uk/ols4/api"
     OPENFDA_BASE = "https://api.fda.gov/drug/label.json"
     
     @staticmethod
     def search_mesh_term(disease_name: str) -> Dict:
-        """Search for disease information using MeSH terminology"""
         try:
-            # Search Disease Ontology first
             search_url = f"{MedicalAPIs.DISEASE_ONTOLOGY_BASE}/search"
             params = {
                 "q": disease_name,
@@ -50,17 +44,12 @@ class MedicalAPIs:
     
     @staticmethod
     def search_disease(disease_name: str) -> Dict:
-        """Comprehensive disease search across multiple APIs"""
         try:
             results = []
             
-            # Search Disease Ontology
             mesh_result = MedicalAPIs.search_mesh_term(disease_name)
             if mesh_result.get("success"):
                 results.append(mesh_result["data"])
-            
-            # Search additional medical databases if needed
-            # This could be extended with other APIs like MedlinePlus, etc.
             
             return {
                 "success": True,
@@ -73,7 +62,6 @@ class MedicalAPIs:
     
     @staticmethod
     def search_drug(drug_name: str) -> Dict:
-        """Search for drug information using OpenFDA"""
         try:
             search_url = f"{MedicalAPIs.OPENFDA_BASE}"
             params = {
@@ -95,7 +83,7 @@ class MedicalAPIs:
                             "generic_name": result.get("openfda", {}).get("generic_name", [""])[0],
                             "manufacturer": result.get("openfda", {}).get("manufacturer_name", [""])[0],
                             "purpose": result.get("purpose", []),
-                            "warnings": result.get("warnings", [])[:2],  # Limit warnings
+                            "warnings": result.get("warnings", [])[:2],
                             "dosage_and_administration": result.get("dosage_and_administration", [])
                         }
                         drug_info.append(drug_data)
@@ -113,9 +101,6 @@ class MedicalAPIs:
     
     @staticmethod
     def get_disease_symptoms(disease_name: str) -> Dict:
-        """Get typical symptoms for a disease"""
-        # This could integrate with medical databases
-        # For now, return a basic symptom mapping
         symptom_mapping = {
             "Grippe": ["fièvre", "toux", "fatigue", "courbatures", "maux de tête"],
             "COVID-19": ["fièvre", "toux sèche", "fatigue", "perte d'odorat", "perte de goût"],
@@ -136,9 +121,6 @@ class MedicalAPIs:
     
     @staticmethod
     def validate_drug_interaction(drugs: List[str]) -> Dict:
-        """Check for potential drug interactions"""
-        # This would integrate with drug interaction databases
-        # For now, return a basic response
         return {
             "success": True,
             "drugs_checked": drugs,

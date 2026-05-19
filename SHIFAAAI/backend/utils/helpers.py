@@ -1,4 +1,4 @@
-# helpers.py - Fonctions utilitaires pour SHIFAAAI
+"""Provides shared validation, normalization, and helper utilities."""
 
 import re
 import json
@@ -9,47 +9,15 @@ from typing import Dict, List, Any, Optional, Union, Tuple
 from functools import wraps
 import unicodedata
 
-# =========================================================
-# VALIDATION DES DONNÉES
-# =========================================================
-
 def validate_email(email: str) -> bool:
-    """
-    Valider le format d'un email
-    
-    Args:
-        email: Adresse email à valider
-        
-    Returns:
-        True si l'email est valide, False sinon
-    """
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return bool(re.match(pattern, email))
 
 def validate_phone(phone: str) -> bool:
-    """
-    Valider le format d'un numéro de téléphone français
-    
-    Args:
-        phone: Numéro de téléphone
-        
-    Returns:
-        True si valide, False sinon
-    """
-    # Accepte: 0612345678, 06 12 34 56 78, +33612345678
     pattern = r'^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]?\d{2}){4}$'
     return bool(re.match(pattern, phone))
 
 def validate_symptom_text(text: str) -> Tuple[bool, Optional[str]]:
-    """
-    Valider le texte des symptômes
-    
-    Args:
-        text: Texte des symptômes
-        
-    Returns:
-        (is_valid, error_message)
-    """
     if not text or not text.strip():
         return False, "Le texte ne peut pas être vide"
     
@@ -59,22 +27,12 @@ def validate_symptom_text(text: str) -> Tuple[bool, Optional[str]]:
     if len(text) > 5000:
         return False, "Le texte est trop long (maximum 5000 caractères)"
     
-    # Vérifier la présence de caractères valides
     if not any(c.isalpha() for c in text):
         return False, "Le texte doit contenir au moins une lettre"
     
     return True, None
 
 def validate_disease_name(name: str) -> Tuple[bool, Optional[str]]:
-    """
-    Valider le nom d'une maladie
-    
-    Args:
-        name: Nom de la maladie
-        
-    Returns:
-        (is_valid, error_message)
-    """
     if not name or not name.strip():
         return False, "Le nom ne peut pas être vide"
     
@@ -86,22 +44,7 @@ def validate_disease_name(name: str) -> Tuple[bool, Optional[str]]:
     
     return True, None
 
-# =========================================================
-# NORMALISATION ET NETTOYAGE
-# =========================================================
-
 def normalize_text(text: str, lower: bool = True, remove_accents: bool = True) -> str:
-    """
-    Normaliser le texte (minuscules, sans accents, etc.)
-    
-    Args:
-        text: Texte à normaliser
-        lower: Convertir en minuscules
-        remove_accents: Supprimer les accents
-        
-    Returns:
-        Texte normalisé
-    """
     if not text:
         return ""
     
@@ -112,24 +55,12 @@ def normalize_text(text: str, lower: bool = True, remove_accents: bool = True) -
     if lower:
         text = text.lower()
     
-    # Supprimer les caractères spéciaux
     text = re.sub(r'[^\w\s-]', ' ', text)
-    
-    # Supprimer les espaces multiples
     text = re.sub(r'\s+', ' ', text)
     
     return text.strip()
 
 def clean_symptoms_list(symptoms: List[str]) -> List[str]:
-    """
-    Nettoyer une liste de symptômes
-    
-    Args:
-        symptoms: Liste des symptômes
-        
-    Returns:
-        Liste nettoyée sans doublons
-    """
     if not symptoms:
         return []
     
@@ -143,20 +74,8 @@ def clean_symptoms_list(symptoms: List[str]) -> List[str]:
     return cleaned
 
 def extract_keywords(text: str, min_length: int = 3) -> List[str]:
-    """
-    Extraire les mots-clés d'un texte
-    
-    Args:
-        text: Texte source
-        min_length: Longueur minimale des mots
-        
-    Returns:
-        Liste des mots-clés
-    """
     if not text:
         return []
-    
-    # Stopwords communs
     stopwords = {
         'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'et', 'ou', 'donc',
         'car', 'mais', 'est', 'sont', 'a', 'au', 'aux', 'avec', 'sans', 'pour',
@@ -167,7 +86,6 @@ def extract_keywords(text: str, min_length: int = 3) -> List[str]:
     words = normalize_text(text).split()
     keywords = [w for w in words if len(w) >= min_length and w not in stopwords]
     
-    # Supprimer les doublons tout en gardant l'ordre
     seen = set()
     unique_keywords = []
     for k in keywords:
@@ -177,7 +95,6 @@ def extract_keywords(text: str, min_length: int = 3) -> List[str]:
     
     return unique_keywords
 
-# =========================================================
 # FORMATAGE DES DONNÉES
 # =========================================================
 

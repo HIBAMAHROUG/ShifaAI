@@ -1,4 +1,4 @@
-# evaluate.py - Script d'évaluation pour SHIFAAAI
+"""Evaluates SHIFAAAI models and reports common ML metrics."""
 
 import json
 import numpy as np
@@ -16,13 +16,7 @@ from sklearn.model_selection import cross_val_score, train_test_split
 import warnings
 warnings.filterwarnings('ignore')
 
-# =========================================================
-# CONFIGURATION
-# =========================================================
-
 class EvaluationConfig:
-    """Configuration de l'évaluation"""
-    
     TEST_SIZE = 0.2
     RANDOM_STATE = 42
     CV_FOLDS = 5
@@ -35,15 +29,7 @@ class EvaluationConfig:
     PLOT_STYLE = 'seaborn-v0_8-darkgrid'
     FIGURE_SIZE = (12, 8)
 
-# =========================================================
-# CLASSE D'ÉVALUATION PRINCIPALE
-# =========================================================
-
 class ModelEvaluator:
-    """
-    Évaluateur de performance pour le moteur IA SHIFAAAI
-    """
-    
     def __init__(self, model=None, vectorizer=None, label_encoder=None):
         self.model = model
         self.vectorizer = vectorizer
@@ -52,27 +38,26 @@ class ModelEvaluator:
         self.predictions_history = []
     
     def load_model(self, model_path: str, vectorizer_path: str = None, encoder_path: str = None):
-        """Charger un modèle sauvegardé"""
         import pickle
         
         try:
             with open(model_path, 'rb') as f:
                 self.model = pickle.load(f)
-            print(f"✅ Modèle chargé: {model_path}")
+            print(f"Model loaded: {model_path}")
             
             if vectorizer_path:
                 with open(vectorizer_path, 'rb') as f:
                     self.vectorizer = pickle.load(f)
-                print(f"✅ Vectorizer chargé: {vectorizer_path}")
+                print(f"Vectorizer loaded: {vectorizer_path}")
             
             if encoder_path:
                 with open(encoder_path, 'rb') as f:
                     self.label_encoder = pickle.load(f)
-                print(f"✅ Label encoder chargé: {encoder_path}")
+                print(f"Label encoder loaded: {encoder_path}")
             
             return True
         except Exception as e:
-            print(f"❌ Erreur chargement modèle: {e}")
+            print(f"Model load error: {e}")
             return False
     
     def evaluate_classification(self, y_true, y_pred, y_proba=None, 

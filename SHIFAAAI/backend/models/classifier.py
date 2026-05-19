@@ -1,4 +1,4 @@
-# classifier_model.py - Version améliorée pour SHIFAAAI
+"""Trains and evaluates lightweight text classifiers for medical symptoms."""
 
 import pandas as pd
 import numpy as np
@@ -18,44 +18,19 @@ from sklearn.preprocessing import LabelEncoder
 import warnings
 warnings.filterwarnings('ignore')
 
-# =========================================================
-# CONFIGURATION
-# =========================================================
-
 DATASET_PATH = "data/dataset.csv"
 MODEL_DIR = "ai-model"
 MODEL_PATH = os.path.join(MODEL_DIR, "shifaa_model.pkl")
 VECTORIZER_PATH = os.path.join(MODEL_DIR, "vectorizer.pkl")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
-# =========================================================
-# PRÉTRAITEMENT AVANCÉ
-# =========================================================
-
 def preprocess_text(text):
-    """
-    Prétraiter le texte des symptômes
-    - Conversion en minuscules
-    - Suppression de la ponctuation
-    - Suppression des stopwords médicaux légers
-    - Normalisation
-    """
     if not isinstance(text, str):
         text = str(text)
-    
-    # Conversion en minuscules
     text = text.lower()
-    
-    # Suppression de la ponctuation
     text = re.sub(r'[^\w\s]', ' ', text)
-    
-    # Suppression des chiffres isolés
     text = re.sub(r'\b\d+\b', '', text)
-    
-    # Suppression des espaces multiples
     text = re.sub(r'\s+', ' ', text).strip()
-    
-    # Suppression des stopwords médicaux simples
     stopwords = ['le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'et', 'ou', 
                  'donc', 'car', 'mais', 'est', 'sont', 'a', 'au', 'aux', 'avec', 
                  'sans', 'pour', 'par', 'dans', 'sur', 'chez', 'entre', 'je', 
@@ -67,31 +42,20 @@ def preprocess_text(text):
     
     return ' '.join(words)
 
-# =========================================================
-# CHARGEMENT DU DATASET
-# =========================================================
-
 def load_dataset():
-    """Charger et préparer le dataset"""
-    
-    # Créer le dossier data si nécessaire
     os.makedirs("data", exist_ok=True)
-    
-    # Vérifier si le dataset existe
     if not os.path.exists(DATASET_PATH):
-        print("❌ Dataset non trouvé. Création d'un dataset par défaut...")
+        print("Dataset not found. Creating a default dataset...")
         create_default_dataset()
     
     df = pd.read_csv(DATASET_PATH)
-    print(f"✅ Dataset chargé: {len(df)} échantillons")
-    print(f"📊 Maladies uniques: {df['disease'].nunique()}")
-    print(f"🔍 Aperçu:\n{df.head()}")
+    print(f"Dataset loaded: {len(df)} samples")
+    print(f"Unique diseases: {df['disease'].nunique()}")
+    print(f"Preview:\n{df.head()}")
     
     return df
 
 def create_default_dataset():
-    """Créer un dataset par défaut si le fichier n'existe pas"""
-    
     data = {
         "symptoms": [
             "fièvre toux fatigue", "fièvre toux perte goût", "mal gorge douleur gorge",
@@ -113,15 +77,9 @@ def create_default_dataset():
     df = pd.DataFrame(data)
     os.makedirs("data", exist_ok=True)
     df.to_csv(DATASET_PATH, index=False)
-    print(f"✅ Dataset par défaut créé: {DATASET_PATH}")
-
-# =========================================================
-# MULTIPLES CLASSIFIEURS
-# =========================================================
+    print(f"Default dataset created: {DATASET_PATH}")
 
 class ShifaaClassifier:
-    """Classificateur multi-modèle pour SHIFAAAI"""
-    
     def __init__(self):
         self.models = {}
         self.best_model = None
@@ -130,7 +88,6 @@ class ShifaaClassifier:
         self.trained = False
         
     def get_classifiers(self):
-        """Dictionnaire des classifieurs disponibles"""
         return {
             'Naive Bayes': Pipeline([
                 ('tfidf', TfidfVectorizer(ngram_range=(1, 2), max_features=5000)),
@@ -159,19 +116,13 @@ class ShifaaClassifier:
         }
     
     def train_all(self, X, y, test_size=0.2):
-        """Entraîner tous les classifieurs et sélectionner le meilleur"""
-        
-        # Encoder les labels
         self.label_encoder = LabelEncoder()
         y_encoded = self.label_encoder.fit_transform(y)
-        
-        # Split des données
         X_train, X_test, y_train, y_test = train_test_split(
             X, y_encoded, test_size=test_size, random_state=42, stratify=y_encoded
         )
-        
         print("\n" + "="*60)
-        print("🤖 ENTRAÎNEMENT DES MODÈLES")
+        print("MODEL TRAINING")
         print("="*60)
         
         results = []
@@ -196,24 +147,18 @@ class ShifaaClassifier:
             except Exception as e:
                 print(f"❌ {name:20} | Erreur: {str(e)[:50]}")
         
-        # Sélectionner le meilleur modèle
         best = max(results, key=lambda x: x['accuracy'])
         self.best_model = self.models[best['model']]
         self.trained = True
-        
         print("\n" + "="*60)
-        print(f"🏆 MEILLEUR MODÈLE: {best['model']} (Accuracy: {best['accuracy']:.2%})")
+        print(f"Best model: {best['model']} (Accuracy: {best['accuracy']:.2%})")
         print("="*60)
-        
-        # Validation croisée
         cv_scores = cross_val_score(self.best_model, X, y_encoded, cv=5)
-        print(f"📊 Validation croisée (5-fold): {cv_scores.mean():.2%} ± {cv_scores.std():.2%}")
+        print(f"Cross-validation (5-fold): {cv_scores.mean():.2%} ± {cv_scores.std():.2%}")
         
         return best
     
     def train_single(self, X, y, model_name='Logistic Regression', test_size=0.2):
-        """Entraîner un seul classifieur spécifique"""
-        
         self.label_encoder = LabelEncoder()
         y_encoded = self.label_encoder.fit_transform(y)
         

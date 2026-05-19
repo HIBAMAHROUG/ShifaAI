@@ -1,4 +1,4 @@
-# analysis_routes.py - Routes d'analyse pour SHIFAAAI
+"""Defines analysis routes for tokenization, parsing, and classification."""
 
 from flask import request, jsonify, Blueprint
 import json
@@ -7,20 +7,14 @@ import re
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 
-# =========================================================
-# IMPORTS DES MODULES
-# =========================================================
-
-# Importer les modules existants
 try:
     from tokenizer_model import MedicalTokenizer, AdvancedMedicalTokenizer
     from parser_model import MedicalTextParser, AdvancedMedicalParser, parse_symptoms
     from classifier_model import ShifaaClassifier
 except ImportError as e:
-    print(f"⚠️ Erreur d'importation: {e}")
-    print("💡 Utilisation des versions simplifiées")
-    
-    # Versions simplifiées en cas d'absence
+    print(f"Import error: {e}")
+    print("Using simplified fallbacks")
+
     class SimpleTokenizer:
         def tokenize(self, text):
             tokens = text.lower().split()
@@ -55,13 +49,8 @@ except ImportError as e:
     
     ShifaaClassifier = SimpleClassifier
 
-# =========================================================
-# CONFIGURATION
-# =========================================================
-
 analysis_bp = Blueprint('analysis', __name__, url_prefix='/api/analysis')
 
-# Initialiser les modèles
 tokenizer = MedicalTokenizer()
 advanced_tokenizer = AdvancedMedicalTokenizer() if hasattr(MedicalTokenizer, 'tokenize_advanced') else None
 
@@ -69,19 +58,10 @@ parser = MedicalTextParser() if MedicalTextParser else None
 advanced_parser = AdvancedMedicalParser() if AdvancedMedicalParser else None
 
 classifier = ShifaaClassifier()
-classifier.load()  # Charger le modèle s'il existe
-
-# =========================================================
-# ROUTES D'ANALYSE
-# =========================================================
+classifier.load()
 
 @analysis_bp.route('/tokenize', methods=['POST'])
 def tokenize_endpoint():
-    """
-    Tokeniser un texte médical
-    POST /api/analysis/tokenize
-    Body: {"text": "texte à analyser", "advanced": false}
-    """
     start_time = time.time()
     
     try:
@@ -101,14 +81,11 @@ def tokenize_endpoint():
             result = tokenizer.tokenize(text)
             result = result.__dict__ if hasattr(result, '__dict__') else result
         
-        # Convertir les tokens en format JSON
         if 'basic' in result:
-            # Format avancé
             tokens_json = result['basic']['tokens']
             if hasattr(tokens_json[0], '__dict__') if tokens_json else False:
                 tokens_json = [t.__dict__ for t in tokens_json]
         else:
-            # Format standard
             tokens_json = result.get('tokens', [])
             if tokens_json and hasattr(tokens_json[0], '__dict__'):
                 tokens_json = [t.__dict__ for t in tokens_json]
@@ -136,11 +113,6 @@ def tokenize_endpoint():
 
 @analysis_bp.route('/parse', methods=['POST'])
 def parse_endpoint():
-    """
-    Parser un texte médical (extraire symptômes, négations, etc.)
-    POST /api/analysis/parse
-    Body: {"text": "texte à analyser", "advanced": false}
-    """
     start_time = time.time()
     
     try:
@@ -160,13 +132,11 @@ def parse_endpoint():
             result = parser.parse(text)
             result = result.__dict__ if hasattr(result, '__dict__') else result
             
-            # Convertir les Symptom objects en dict
             if 'symptoms' in result and result['symptoms']:
                 result['symptoms'] = [s.__dict__ if hasattr(s, '__dict__') else s for s in result['symptoms']]
             if 'temporal_info' in result and hasattr(result['temporal_info'], '__dict__'):
                 result['temporal_info'] = result['temporal_info'].__dict__
         else:
-            # Fallback simple
             result = simple_parse(text)
         
         processing_time = (time.time() - start_time) * 1000
@@ -190,11 +160,6 @@ def parse_endpoint():
 
 @analysis_bp.route('/classify', methods=['POST'])
 def classify_endpoint():
-    """
-    Classifier les symptômes pour prédire une maladie
-    POST /api/analysis/classify
-    Body: {"text": "symptômes", "top_n": 3}
-    """
     start_time = time.time()
     
     try:
@@ -207,12 +172,8 @@ def classify_endpoint():
             return jsonify({"error": "No text provided"}), 400
         
         top_n = data.get('top_n', 3)
-        top_n = min(max(top_n, 1), 5)  # Entre 1 et 5
-        
-        # Prédiction
+        top_n = min(max(top_n, 1), 5)
         predictions = classifier.predict_proba_multiple(text, top_n=top_n)
-        
-        # Single prediction pour compatibilité
         single_result = classifier.predict(text)
         
         processing_time = (time.time() - start_time) * 1000

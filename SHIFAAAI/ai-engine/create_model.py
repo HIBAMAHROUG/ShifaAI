@@ -1,4 +1,4 @@
-# create_model.py - Script pour créer et sauvegarder le modèle
+"""Creates and saves a lightweight medical symptom classifier."""
 
 import pickle
 import numpy as np
@@ -11,18 +11,10 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.pipeline import Pipeline
 import os
 
-# =========================================================
-# CRÉATION DU MODÈLE
-# =========================================================
-
 def create_model():
-    """Créer et sauvegarder le modèle SHIFAAAI"""
-    
     print("\n" + "="*60)
-    print("🔧 CRÉATION DU MODÈLE SHIFAAAI")
+    print("MODEL CREATION")
     print("="*60)
-    
-    # Données d'entraînement
     data = {
         "symptoms": [
             "fièvre toux fatigue", "fièvre toux perte goût", "mal gorge douleur gorge",
@@ -45,34 +37,25 @@ def create_model():
     
     print(f"📊 Données: {len(df)} échantillons, {df['disease'].nunique()} maladies")
     
-    # Vectorizer TF-IDF
     vectorizer = TfidfVectorizer(
         max_features=5000,
         ngram_range=(1, 2),
         min_df=1
     )
     
-    # Encoder les labels
     label_encoder = LabelEncoder()
-    
-    # Préparer les données
     X = vectorizer.fit_transform(df['symptoms'])
     y = label_encoder.fit_transform(df['disease'])
-    
-    # Modèle (Random Forest)
     model = RandomForestClassifier(
         n_estimators=100,
         max_depth=20,
         random_state=42
     )
     
-    print("\n🚀 Entraînement du modèle...")
+    print("\nTraining model...")
     model.fit(X, y)
-    
-    print(f"✅ Modèle entraîné avec succès")
-    print(f"   Accuracy entraînement: {model.score(X, y):.2%}")
-    
-    # Créer le pipeline complet
+    print("Model trained successfully")
+    print(f"Training accuracy: {model.score(X, y):.2%}")
     pipeline = {
         'vectorizer': vectorizer,
         'model': model,
@@ -87,27 +70,18 @@ def create_model():
         }
     }
     
-    # Sauvegarder
     os.makedirs('models', exist_ok=True)
     with open('models/model.pkl', 'wb') as f:
         pickle.dump(pipeline, f)
     
-    print("\n💾 Modèle sauvegardé: models/model.pkl")
+    print("\nModel saved: models/model.pkl")
     
     return pipeline
 
-# =========================================================
-# TEST DU MODÈLE
-# =========================================================
-
 def test_model():
-    """Tester le modèle sauvegardé"""
-    
     print("\n" + "="*60)
-    print("🧪 TEST DU MODÈLE")
+    print("MODEL TEST")
     print("="*60)
-    
-    # Charger le modèle
     with open('models/model.pkl', 'rb') as f:
         pipeline = pickle.load(f)
     
@@ -115,7 +89,6 @@ def test_model():
     model = pipeline['model']
     label_encoder = pipeline['label_encoder']
     
-    # Tester avec différents symptômes
     test_cases = [
         ("fièvre toux fatigue", "Grippe"),
         ("mal de gorge", "Angine"),
@@ -124,7 +97,7 @@ def test_model():
         ("toux sèche essoufflement", "Asthme")
     ]
     
-    print("\n📋 Tests de prédiction:")
+    print("\nPrediction tests:")
     print("-" * 50)
     
     for symptoms, expected in test_cases:
@@ -132,11 +105,9 @@ def test_model():
         pred_encoded = model.predict(X_test)[0]
         pred = label_encoder.inverse_transform([pred_encoded])[0]
         
-        # Probabilités
         proba = model.predict_proba(X_test)[0]
         confidence = max(proba) * 100
-        
-        status = "✅" if pred == expected else "⚠️"
+        status = "OK" if pred == expected else "WARN"
         print(f"{status} Symptômes: '{symptoms}'")
         print(f"   Prédiction: {pred} (confiance: {confidence:.1f}%)")
         print(f"   Attendu: {expected}")

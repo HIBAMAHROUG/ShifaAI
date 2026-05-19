@@ -1,4 +1,4 @@
-# parser_model.py - Modèle de parsing pour SHIFAAAI
+"""Parses medical text into symptoms, timing, and context signals."""
 
 import re
 import json
@@ -8,16 +8,11 @@ from datetime import datetime, timedelta
 import spacy
 from collections import Counter
 
-# =========================================================
-# CLASSES DE DONNÉES
-# =========================================================
-
 @dataclass
 class Symptom:
-    """Structure d'un symptôme extrait"""
     text: str
     original_text: str
-    type: str  # symptom, negation, intensity, duration, location
+    type: str
     severity: Optional[str] = None
     location: Optional[str] = None
     duration: Optional[str] = None
@@ -26,15 +21,13 @@ class Symptom:
 
 @dataclass
 class TemporalInfo:
-    """Information temporelle"""
     duration_value: Optional[int] = None
-    duration_unit: Optional[str] = None  # jours, heures, semaines, mois
-    onset: Optional[str] = None  # depuis, il y a, soudainement
-    frequency: Optional[str] = None  # quotidien, hebdomadaire, occasionnel
+    duration_unit: Optional[str] = None
+    onset: Optional[str] = None
+    frequency: Optional[str] = None
 
 @dataclass
 class ParseResult:
-    """Résultat complet du parsing"""
     original_text: str
     symptoms: List[Symptom]
     temporal_info: TemporalInfo
@@ -43,33 +36,16 @@ class ParseResult:
     locations: List[str]
     confidence: float
 
-# =========================================================
-# MODÈLE DE PARSING
-# =========================================================
-
 class MedicalTextParser:
-    """
-    Parseur de texte médical pour l'extraction de symptômes
-    """
-    
     def __init__(self):
-        # Dictionnaire des symptômes connus
         self.symptom_keywords = self._init_symptom_keywords()
-        
-        # Dictionnaire des localisations
         self.location_keywords = self._init_location_keywords()
-        
-        # Mots de négation
         self.negation_words = {"pas", "ne", "non", "jamais", "plus", "aucun", "sans", "ni"}
-        
-        # Intensificateurs
         self.intensifiers = {
             "très": 1.5, "beaucoup": 1.3, "extrêmement": 2.0, "trop": 1.5,
             "fortement": 1.4, "légèrement": 0.7, "un peu": 0.5, "peu": 0.6,
             "assez": 1.2, "plutôt": 1.1, "vraiment": 1.3, "absolument": 1.5
         }
-        
-        # Patterns pour les durées
         self.duration_patterns = [
             (r'(\d+)\s*(?:jours?|journées?)', 'jours', 1),
             (r'(\d+)\s*(?:heures?|h)', 'heures', 1),
@@ -80,7 +56,6 @@ class MedicalTextParser:
             (r'(\d+)\s*(?:à|a)\s*(\d+)', 'range', None)
         ]
         
-        # Patterns pour les intensités
         self.severity_patterns = {
             'critique': ['sévère', 'très fort', 'extrême', 'insupportable', 'intolérable'],
             'élevé': ['fort', 'intense', 'important', 'aigu', 'violent'],
@@ -88,64 +63,42 @@ class MedicalTextParser:
             'faible': ['léger', 'faible', 'mineur', 'petit']
         }
         
-        # Pattern pour les localisations
         self.location_patterns = [
             (r'(?:(?:au|x|à|dans le|dans la)\s+)?(?:niveau\s+de\s+la\s+)?(?\w+(?:\s+\w+)?)', 'location')
         ]
-        
-        # Tenter de charger spaCy pour le NLP avancé
         self.nlp = None
         try:
-            # Essayer de charger le modèle français
             self.nlp = spacy.load("fr_core_news_sm")
-            print("✅ spaCy chargé avec succès")
         except OSError:
-            print("⚠️ spaCy non disponible - utilisation du mode basique")
+            pass
     
     def _init_symptom_keywords(self) -> Dict[str, str]:
-        """Initialiser le dictionnaire des symptômes"""
         return {
-            # Température
             "fièvre": "temperature", "fievre": "temperature", "frissons": "temperature",
             "sueurs": "temperature", "hyperthermie": "temperature",
-            
-            # Respiratoire
             "toux": "respiratory", "tousser": "respiratory", "expectoration": "respiratory",
             "essoufflement": "respiratory", "difficulté respirer": "respiratory",
             "respiration sifflante": "respiratory", "dyspnée": "respiratory",
             "respiration difficile": "respiratory", "oppression thoracique": "respiratory",
-            
-            # ORL
             "gorge": "ent", "mal gorge": "ent", "douleur gorge": "ent", "angine": "ent",
             "nez": "ent", "nez bouché": "ent", "écoulement nasal": "ent", 
             "éternuement": "ent", "éternuer": "ent", "oreille": "ent", "douleur oreille": "ent",
             "otalgie": "ent", "acouphènes": "ent", "bourdonnement": "ent",
-            
-            # Neurologique
             "maux de tête": "neuro", "céphalée": "neuro", "migraine": "neuro",
             "vertige": "neuro", "étourdissement": "neuro", "tête qui tourne": "neuro",
             "perte connaissance": "neuro", "confusion": "neuro", "tremblement": "neuro",
-            
-            # Digestif
             "nausée": "digest", "nausées": "digest", "vomissement": "digest", "vomir": "digest",
             "diarrhée": "digest", "diarrhées": "digest", "constipation": "digest",
             "douleur ventre": "digest", "douleur abdominale": "digest", "ballonnement": "digest",
-            
-            # Musculo-squelettique
             "douleur": "musculo", "courbatures": "musculo", "douleur musculaire": "musculo",
             "arthralgie": "musculo", "douleur articulaire": "musculo", "raideur": "musculo",
-            
-            # Général
             "fatigue": "general", "épuisement": "general", "asthénie": "general",
             "perte poids": "general", "anorexie": "general", "fièvre": "general",
-            
-            # Cutané
             "éruption": "derma", "éruption cutanée": "derma", "rougeur": "derma",
             "démangeaison": "derma", "prurit": "derma", "bouton": "derma", "urticaire": "derma"
         }
     
     def _init_location_keywords(self) -> Dict[str, List[str]]:
-        """Initialiser les mots de localisation"""
         return {
             "tête": ["tête", "crâne", "front", "nuque", "occiput"],
             "thorax": ["poitrine", "thorax", "cage thoracique", "sternum"],
@@ -155,26 +108,13 @@ class MedicalTextParser:
         }
     
     def parse(self, text: str) -> ParseResult:
-        """
-        Analyser le texte médical et extraire les informations
-        
-        Args:
-            text: Texte en langage naturel décrivant les symptômes
-            
-        Returns:
-            ParseResult contenant toutes les informations extraites
-        """
         original_text = text
         text_lower = text.lower()
-        
-        # Extraire les informations
         symptoms = self._extract_symptoms(text_lower)
         temporal_info = self._extract_temporal_info(text_lower)
         negations = self._extract_negations(text_lower)
         intensifiers = self._extract_intensifiers(text_lower)
         locations = self._extract_locations(text_lower)
-        
-        # Calculer la confiance globale
         confidence = self._calculate_confidence(symptoms, len(original_text.split()))
         
         return ParseResult(
@@ -188,24 +128,17 @@ class MedicalTextParser:
         )
     
     def _extract_symptoms(self, text: str) -> List[Symptom]:
-        """Extraire les symptômes du texte"""
         symptoms = []
         text_tokens = text.split()
         
         for i, token in enumerate(text_tokens):
-            # Vérifier si le token est un symptôme connu
             if token in self.symptom_keywords:
                 symptom_type = self.symptom_keywords[token]
-                
-                # Vérifier le contexte (intensité, localisation)
                 severity = self._detect_severity(text, token)
                 location = self._detect_location(text, i)
                 intensity = self._get_intensity(text, i)
-                
-                # Vérifier si négation
                 is_negated = any(neg in text[max(0, i-3):i] for neg in self.negation_words)
-                
-                if not is_negated:  # Ne pas ajouter les symptômes niés comme positifs
+                if not is_negated:
                     symptoms.append(Symptom(
                         text=token,
                         original_text=token,
@@ -231,7 +164,6 @@ class MedicalTextParser:
         return list(unique_symptoms.values())
     
     def _extract_symptoms_spacy(self, text: str, existing_symptoms: List[Symptom]) -> List[Symptom]:
-        """Extraire les symptômes avec spaCy (analyse avancée)"""
         symptoms = []
         doc = self.nlp(text)
         
@@ -240,7 +172,6 @@ class MedicalTextParser:
         for ent in doc.ents:
             if ent.label_ in ["SYMPTOM", "DISEASE"]:
                 if ent.text.lower() not in existing_texts:
-                    # Vérifier le contexte
                     is_negated = any(neg in doc.text[max(0, ent.start-5):ent.end].lower() 
                                     for neg in self.negation_words)
                     
@@ -255,7 +186,6 @@ class MedicalTextParser:
         return symptoms
     
     def _extract_temporal_info(self, text: str) -> TemporalInfo:
-        """Extraire les informations temporelles"""
         temporal = TemporalInfo()
         
         for pattern, unit, group in self.duration_patterns:

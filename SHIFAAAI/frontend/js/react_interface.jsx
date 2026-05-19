@@ -1,3 +1,7 @@
+/**
+ * Handles the main React medical analysis experience and client-side API flow.
+ */
+
 const { useState, useEffect } = React;
 
 const css = `
@@ -781,15 +785,14 @@ function ShifaaAI() {
               {internalNlp && (
                 <div className="internal-panel">
                   <div className="internal-head">
-                    <div className="internal-title">🔍 Analyse Syntaxique Avancée</div>
+                    <div className="internal-title">Analyse syntaxique avancée</div>
                     <button className="detail-btn" onClick={() => setShowDetailedNlp((v) => !v)}>
                       {showDetailedNlp ? "Vue simplifiée" : "Vue détaillée"}
                     </button>
                   </div>
                   
-                  {/* Section Analyse Lexicale */}
                   <div className="analysis-section">
-                    <h5 className="section-title">📝 Analyse Lexicale</h5>
+                    <h5 className="section-title">Analyse lexicale</h5>
                     <div className="tok-wrap">
                       {internalNlp.lexical.tokens.slice(0, showDetailedNlp ? internalNlp.lexical.tokens.length : 40).map((t, idx) => (
                         <span
@@ -822,9 +825,8 @@ function ShifaaAI() {
                     </div>
                   </div>
 
-                  {/* Section Analyse Syntaxique */}
                   <div className="analysis-section">
-                    <h5 className="section-title">🔗 Analyse Syntaxique</h5>
+                    <h5 className="section-title">Analyse syntaxique</h5>
                     <div className="syntax-info">
                       <p><strong>Structure grammaticale :</strong> Identification des parties du discours et relations syntaxiques</p>
                     </div>
@@ -882,10 +884,9 @@ function ShifaaAI() {
                     </table>
                   </div>
 
-                  {/* Section Arbre Syntaxique */}
                   {showDetailedNlp && internalNlp.tree && (
                     <div className="analysis-section">
-                      <h5 className="section-title">🌳 Arbre Syntaxique</h5>
+                      <h5 className="section-title">Arbre syntaxique</h5>
                       <div className="tree-box">
                         <pre>{internalNlp.tree}</pre>
                       </div>
@@ -896,11 +897,10 @@ function ShifaaAI() {
             </div>
           </div>
           <div className="hero-right">
-            {/* Résultats de l'analyse à la place du médecin */}
             {analysisResult ? (
               <div className="results-right-panel">
                 <div className="results-header-right">
-                  <h3 className="results-title-right">🏥 Résultats de l'Analyse</h3>
+                  <h3 className="results-title-right">Résultats de l'analyse</h3>
                   <p className="results-subtitle-right">Diagnostic IA complet</p>
                 </div>
                 

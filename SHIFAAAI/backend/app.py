@@ -1,10 +1,9 @@
-# app.py - Serveur Flask avec APIs externes et détection avancée
+"""Handles medical analysis routes, NLP predictions, and external API enrichment."""
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from medical_apis import MedicalAPIs
 from infermedica_api import InfermedicaClient
-import re
 import unicodedata
 from datetime import datetime
 import os
@@ -15,7 +14,6 @@ CORS(app)
 PORT = 5000
 HOST = '127.0.0.1'
 
-# Initialisation du client Infermedica (à configurer avec vos clés)
 INFERMEDICA_APP_ID = os.getenv('INFERMEDICA_APP_ID', 'votre_app_id')
 INFERMEDICA_APP_KEY = os.getenv('INFERMEDICA_APP_KEY', 'votre_app_key')
 
@@ -26,12 +24,7 @@ except Exception as e:
     infermedica_client = None
     print(f"⚠️ Erreur initialisation Infermedica: {e}")
 
-# ============================================================
-# BASE DE CONNAISSANCES MÉDICALE ÉTENDUE (40+ maladies)
-# ============================================================
-
 DISEASE_DATABASE = {
-    # Maladies respiratoires
     "Grippe": {
         "keywords": ["fievre", "fièvre", "toux", "fatigue", "courbature", "frisson"],
         "severity": "modéré", "treatment": "Repos, hydratation, paracétamol"
@@ -53,7 +46,6 @@ DISEASE_DATABASE = {
         "severity": "modéré", "treatment": "Bronchodilatateurs, consultation pneumologue"
     },
     
-    # ORL
     "Angine": {
         "keywords": ["gorge", "mal gorge", "douleur gorge", "avaler", "amygdale"],
         "severity": "faible", "treatment": "Gargarismes, boissons chaudes, paracétamol"
@@ -71,7 +63,6 @@ DISEASE_DATABASE = {
         "severity": "faible", "treatment": "Lavage nez, décongestionnants"
     },
     
-    # Neurologique
     "Migraine": {
         "keywords": ["migraine", "mal tete", "cephalee", "tete", "lumiere", "bruit", "nausee", "aura"],
         "severity": "modéré", "treatment": "Repos obscurité, antimigraineux"
@@ -85,7 +76,6 @@ DISEASE_DATABASE = {
         "severity": "modéré", "treatment": "Kinésithérapie vestibulaire"
     },
     
-    # Digestif
     "Gastro-entérite": {
         "keywords": ["nausee", "vomissement", "diarrhee", "ventre", "gastro"],
         "severity": "modéré", "treatment": "Hydratation, repos, régime sans lactose"
@@ -99,7 +89,6 @@ DISEASE_DATABASE = {
         "severity": "faible", "treatment": "Fibres, hydratation, activité physique"
     },
     
-    # Cardiovasculaire
     "Problème cardiaque": {
         "keywords": ["coeur", "palpitation", "douleur poitrine", "cardiaque", "infarctus", "angine poitrine", "tachycardie"],
         "severity": "critique", "treatment": "URGENCE - Consulter immédiatement"
@@ -109,7 +98,6 @@ DISEASE_DATABASE = {
         "severity": "modéré", "treatment": "Consultation cardiologue, régime sans sel"
     },
     
-    # Rhumatologique
     "Arthrose": {
         "keywords": ["articulation", "genou", "hanche", "arthrose", "raideur matin"],
         "severity": "modéré", "treatment": "Physiothérapie, antalgiques"
@@ -119,7 +107,6 @@ DISEASE_DATABASE = {
         "severity": "modéré", "treatment": "Repos, kinésithérapie"
     },
     
-    # Dermatologique
     "Eczéma": {
         "keywords": ["peau", "demangeaison", "rougeur", "eczema", "plaque rouge"],
         "severity": "faible", "treatment": "Crèmes hydratantes, corticoïdes"
@@ -129,7 +116,6 @@ DISEASE_DATABASE = {
         "severity": "faible", "treatment": "Antihistaminiques"
     },
     
-    # Autres
     "Dépression": {
         "keywords": ["tristesse", "deprime", "moral bas", "perte plaisir", "fatigue morale"],
         "severity": "modéré", "treatment": "Consulter psychologue/psychiatre"
@@ -140,18 +126,12 @@ DISEASE_DATABASE = {
     }
 }
 
-# ============================================================
-# FONCTIONS D'ANALYSE
-# ============================================================
-
 def normalize_text(text: str) -> str:
-    """Normaliser le texte (minuscules, sans accents)"""
     text = text.lower()
     text = unicodedata.normalize('NFD', text).encode('ASCII', 'ignore').decode('utf-8')
     return text
 
 def extract_symptoms(text: str) -> list:
-    """Extraire les symptômes du texte"""
     normalized = normalize_text(text)
     all_keywords = []
     
@@ -160,7 +140,6 @@ def extract_symptoms(text: str) -> list:
             if keyword in normalized:
                 all_keywords.append(keyword)
     
-    # Symptômes courants prédéfinis
     common_symptoms = {
         'fievre': 'fièvre', 'toux': 'toux', 'fatigue': 'fatigue',
         'courbature': 'courbatures', 'frisson': 'frissons', 'gorge': 'mal de gorge',
@@ -177,7 +156,6 @@ def extract_symptoms(text: str) -> list:
     return list(set(detected + all_keywords))
 
 def predict_diseases(symptoms: list) -> list:
-    """Prédire les maladies avec scores de probabilité"""
     scores = {}
     
     for disease, info in DISEASE_DATABASE.items():
@@ -199,7 +177,6 @@ def predict_diseases(symptoms: list) -> list:
                     "treatment": info['treatment']
                 }
     
-    # Trier par probabilité décroissante
     sorted_diseases = sorted(scores.items(), key=lambda x: x[1]['probability'], reverse=True)
     
     results = []
@@ -214,7 +191,6 @@ def predict_diseases(symptoms: list) -> list:
     return results
 
 def tokenize_text(text: str) -> list:
-    """Tokeniser le texte avec analyse lexicale"""
     words = text.split()
     tokens = []
     
@@ -222,7 +198,6 @@ def tokenize_text(text: str) -> list:
         clean_word = word.lower().strip('.,;:!?')
         token_type = "WORD"
         
-        # Vérifier si c'est un symptôme
         for disease, info in DISEASE_DATABASE.items():
             for keyword in info['keywords']:
                 if keyword in clean_word:
@@ -231,21 +206,15 @@ def tokenize_text(text: str) -> list:
             if token_type == "SYMPTOM":
                 break
         
-        # Vérifier les négations
         if clean_word in ['pas', 'ne', 'non', 'jamais', 'plus', 'aucun']:
             token_type = "NEGATION"
         
-        # Vérifier les intensificateurs
         if clean_word in ['très', 'beaucoup', 'extremement', 'trop', 'fort', 'intense']:
             token_type = "INTENSIFIER"
         
         tokens.append({"word": word, "type": token_type})
     
     return tokens
-
-# ============================================================
-# ROUTES API
-# ============================================================
 
 @app.route('/health', methods=['GET'])
 def health():
@@ -258,24 +227,20 @@ def health():
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze():
-    """Endpoint principal d'analyse médicale"""
     try:
-        data = request.get_json()
-        text = data.get('text', '')
+        data = request.get_json(silent=True) or {}
+        text = (data.get('text') or '').strip()
         
         if not text:
             return jsonify({"error": "Aucun symptôme fourni"}), 400
         
-        # Analyse
         symptoms = extract_symptoms(text)
         predictions = predict_diseases(symptoms)
         tokens = tokenize_text(text)
         
-        # Appel aux APIs externes pour enrichir
         external_info = {}
         if predictions:
             top_disease = predictions[0]['disease']
-            # Recherche d'informations complémentaires via Disease Ontology API
             mesh_result = MedicalAPIs.search_mesh_term(top_disease)
             if mesh_result.get('success'):
                 external_info['mesh'] = mesh_result['data']
@@ -296,29 +261,37 @@ def analyze():
 
 @app.route('/api/external/disease-info', methods=['POST'])
 def external_disease_info():
-    """API externe - Informations sur une maladie via Disease Ontology"""
-    data = request.get_json()
-    disease_name = data.get('disease', '')
+    data = request.get_json(silent=True) or {}
+    disease_name = (data.get('disease') or '').strip()
+
+    if not disease_name:
+        return jsonify({"success": False, "error": "Le nom de la maladie est requis"}), 400
     
     result = MedicalAPIs.search_disease(disease_name)
     return jsonify(result)
 
 @app.route('/api/infermedica/parse', methods=['POST'])
 def infermedica_parse():
-    """API Infermedica - Parser les symptômes"""
     if not infermedica_client:
         return jsonify({"error": "Client Infermedica non configuré"}), 500
     
     try:
-        data = request.get_json()
-        text = data.get('text', '')
-        age = data.get('age', 30)
-        sex = data.get('sex', 'male')
-        
-        # Parser les symptômes
+        data = request.get_json(silent=True) or {}
+        text = (data.get('text') or '').strip()
+        if not text:
+            return jsonify({"error": "Le texte à analyser est requis"}), 400
+
+        try:
+            age = int(data.get('age', 30))
+        except (TypeError, ValueError):
+            age = 30
+
+        sex = str(data.get('sex', 'male')).strip().lower()
+        if sex not in {'male', 'female'}:
+            sex = 'male'
+
         parsed = infermedica_client.parse_symptoms(text)
         
-        # Obtenir le diagnostic si des symptômes sont détectés
         diagnosis = None
         if parsed.get('mentions'):
             symptoms = parsed['mentions']
@@ -336,16 +309,17 @@ def infermedica_parse():
 
 @app.route('/api/external/drug-info', methods=['POST'])
 def external_drug_info():
-    """API externe - Informations sur un médicament via OpenFDA"""
-    data = request.get_json()
-    drug_name = data.get('drug', '')
+    data = request.get_json(silent=True) or {}
+    drug_name = (data.get('drug') or '').strip()
+
+    if not drug_name:
+        return jsonify({"success": False, "error": "Le nom du médicament est requis"}), 400
     
     result = MedicalAPIs.search_drug(drug_name)
     return jsonify(result)
 
 @app.route('/api/symptoms-list', methods=['GET'])
 def get_symptoms_list():
-    """Liste des symptômes reconnus"""
     all_symptoms = set()
     for disease, info in DISEASE_DATABASE.items():
         for keyword in info['keywords']:
@@ -358,7 +332,6 @@ def get_symptoms_list():
 
 @app.route('/api/diseases-list', methods=['GET'])
 def get_diseases_list():
-    """Liste des maladies détectables"""
     return jsonify({
         "diseases": list(DISEASE_DATABASE.keys()),
         "count": len(DISEASE_DATABASE)

@@ -1,4 +1,4 @@
-# tokenizer_model.py - Modèle de tokenisation pour SHIFAAAI
+"""Tokenizes medical text into normalized symbols and metadata."""
 
 import re
 import json
@@ -7,16 +7,11 @@ from dataclasses import dataclass, asdict
 from collections import Counter
 import unicodedata
 
-# =========================================================
-# CLASSES DE DONNÉES
-# =========================================================
-
 @dataclass
 class Token:
-    """Structure d'un token"""
     text: str
     original_text: str
-    type: str  # word, number, punctuation, medical_term, symptom, negation, intensifier
+    type: str
     position: int
     start_char: int
     end_char: int
@@ -27,7 +22,6 @@ class Token:
 
 @dataclass
 class TokenizationResult:
-    """Résultat complet de la tokenisation"""
     original_text: str
     tokens: List[Token]
     num_tokens: int
@@ -38,26 +32,11 @@ class TokenizationResult:
     word_frequency: Dict[str, int]
     processing_time_ms: float
 
-# =========================================================
-# TOKENIZER MÉDICAL
-# =========================================================
-
 class MedicalTokenizer:
-    """
-    Tokeniseur spécialisé pour le texte médical
-    """
-    
     def __init__(self):
-        # Dictionnaire des termes médicaux
         self.medical_terms = self._init_medical_terms()
-        
-        # Dictionnaire des symptômes
         self.symptoms = self._init_symptoms()
-        
-        # Stopwords médicaux (mots à ignorer)
         self.medical_stopwords = self._init_stopwords()
-        
-        # Types de tokens
         self.token_types = {
             'SYMPTOM': 'symptom',
             'MEDICAL_TERM': 'medical_term',
@@ -69,43 +48,27 @@ class MedicalTokenizer:
             'WORD': 'word'
         }
         
-        # Patterns pour la tokenisation
         self.patterns = self._init_patterns()
-        
-        # Mots de négation
         self.negations = {'pas', 'ne', 'non', 'jamais', 'plus', 'aucun', 'sans', 'ni', 'aucune'}
-        
-        # Intensificateurs
         self.intensifiers = {'très', 'beaucoup', 'extrêmement', 'trop', 'fort', 'intense', 
                             'léger', 'légèrement', 'assez', 'peu', 'vraiment', 'absolument'}
-        
-        # Mots temporels
         self.time_words = {'depuis', 'pendant', 'il y a', 'hier', 'aujourd\'hui', 'demain',
                           'matin', 'soir', 'nuit', 'jour', 'semaine', 'mois', 'année'}
     
     def _init_medical_terms(self) -> Dict[str, str]:
-        """Initialiser le dictionnaire des termes médicaux"""
         return {
-            # Symptômes
             'fièvre': 'symptom', 'fievre': 'symptom', 'toux': 'symptom', 'fatigue': 'symptom',
             'douleur': 'symptom', 'courbature': 'symptom', 'nausée': 'symptom', 'vomissement': 'symptom',
             'diarrhée': 'symptom', 'migraine': 'symptom', 'vertige': 'symptom', 'essoufflement': 'symptom',
-            
-            # Signes cliniques
             'tachycardie': 'sign', 'bradycardie': 'sign', 'hypertension': 'sign', 'hypotension': 'sign',
             'cyanose': 'sign', 'pâleur': 'sign', 'rougeur': 'sign', 'œdème': 'sign',
-            
-            # Examens
             'radiographie': 'exam', 'scanner': 'exam', 'irm': 'exam', 'prise de sang': 'exam',
             'test': 'exam', 'analyse': 'exam', 'bilan': 'exam',
-            
-            # Traitements
             'antibiotique': 'treatment', 'antidouleur': 'treatment', 'repos': 'treatment',
             'hydratation': 'treatment', 'consultation': 'treatment', 'hospitalisation': 'treatment'
         }
     
     def _init_symptoms(self) -> set:
-        """Initialiser l'ensemble des symptômes"""
         return {
             'fièvre', 'fievre', 'toux', 'fatigue', 'douleur', 'courbature', 'courbatures',
             'frisson', 'frissons', 'gorge', 'nez', 'éternuement', 'maux de tête', 'mal de tête',
@@ -116,7 +79,6 @@ class MedicalTokenizer:
         }
     
     def _init_stopwords(self) -> set:
-        """Initialiser les stopwords médicaux"""
         return {
             'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'et', 'ou', 'donc', 'car',
             'mais', 'est', 'sont', 'a', 'au', 'aux', 'avec', 'sans', 'pour', 'par', 'dans',
@@ -126,39 +88,24 @@ class MedicalTokenizer:
         }
     
     def _init_patterns(self) -> List[Tuple[str, str]]:
-        """Initialiser les patterns de tokenisation"""
         return [
-            (r'\b\d+(?:\.\d+)?\b', 'NUMBER'),           # Nombres
-            (r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b', 'DATE'),  # Dates
-            (r'\b\d{1,2}:\d{2}\b', 'TIME'),             # Heures
-            (r'[.!?;,:()\[\]{}\'\"„”«»]', 'PUNCTUATION'), # Ponctuation
+            (r'\b\d+(?:\.\d+)?\b', 'NUMBER'),
+            (r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b', 'DATE'),
+            (r'\b\d{1,2}:\d{2}\b', 'TIME'),
+            (r'[.!?;,:()\[\]{}\'\"„”«»]', 'PUNCTUATION'),
             (r'\b(?:d[ea]|du|des?|le|la|les?)\s+(?:courbatures?|douleurs?)\b', 'MEDICAL_PHRASE'),
             (r'\b(?:très|beaucoup|extrêmement)\s+(?:fort|intense)\s+(?:douleur|fièvre)\b', 'INTENSITY_PHRASE'),
         ]
     
     def tokenize(self, text: str) -> TokenizationResult:
-        """
-        Tokeniser le texte médical
-        
-        Args:
-            text: Texte à tokeniser
-            
-        Returns:
-            TokenizationResult contenant tous les tokens
-        """
         import time
         start_time = time.time()
         
         original_text = text
         text_lower = text.lower()
         
-        # Prétraitement
         text_clean = self._preprocess(text)
-        
-        # Tokenisation de base
         raw_tokens = self._basic_tokenize(text_clean)
-        
-        # Analyser chaque token
         tokens = []
         medical_terms = []
         symptoms_list = []
@@ -188,7 +135,6 @@ class MedicalTokenizer:
                 confidence=0.95 if is_medical else 0.85
             ))
         
-        # Statistiques
         word_frequency = Counter([t.text for t in tokens if t.type == 'word' or t.is_medical])
         
         processing_time = (time.time() - start_time) * 1000
@@ -206,33 +152,19 @@ class MedicalTokenizer:
         )
     
     def _preprocess(self, text: str) -> str:
-        """Prétraiter le texte avant tokenisation"""
-        # Normaliser Unicode
         text = unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore').decode('utf-8')
-        
-        # Remplacer les apostrophes
         text = text.replace("'", "'")
-        
-        # Ajouter des espaces autour de la ponctuation
         text = re.sub(r'([.!?;,:()\[\]{}\'\"„”«»])', r' \1 ', text)
-        
-        # Supprimer les espaces multiples
         text = re.sub(r'\s+', ' ', text)
-        
         return text.strip()
     
     def _basic_tokenize(self, text: str) -> List[Tuple[str, int, int]]:
-        """Tokenisation de base avec positions"""
         tokens = []
         current_pos = 0
-        
-        # Utiliser les patterns avancés d'abord
         text_remaining = text
         
         while text_remaining:
             matched = False
-            
-            # Essayer les patterns spécifiques
             for pattern, token_type in self.patterns:
                 match = re.match(pattern, text_remaining, re.IGNORECASE)
                 if match:
@@ -244,8 +176,6 @@ class MedicalTokenizer:
                     current_pos = end
                     matched = True
                     break
-            
-            # Tokenisation par mots sinon
             if not matched:
                 match = re.match(r'\S+', text_remaining)
                 if match:

@@ -1,4 +1,4 @@
-# vectorizer.py - Vectorizer pour SHIFAAAI
+"""Builds text vectorizers for SHIFAAAI medical symptom models."""
 
 import pickle
 import numpy as np
@@ -11,23 +11,12 @@ from typing import List, Dict, Any, Optional, Union
 import os
 from datetime import datetime
 
-# =========================================================
-# CONFIGURATION
-# =========================================================
-
 class VectorizerConfig:
-    """Configuration du vectorizer"""
-    
-    # Paramètres par défaut
     DEFAULT_MAX_FEATURES = 10000
     DEFAULT_NGRAM_RANGE = (1, 3)
     DEFAULT_MIN_DF = 2
     DEFAULT_MAX_DF = 0.95
-    
-    # Types de vectorizers disponibles
     VECTORIZER_TYPES = ['tfidf', 'count', 'hashing']
-    
-    # Stopwords français spécifiques au médical
     MEDICAL_STOPWORDS = [
         'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'et', 'ou', 'donc',
         'car', 'mais', 'est', 'sont', 'a', 'au', 'aux', 'avec', 'sans', 'pour',
@@ -36,17 +25,7 @@ class VectorizerConfig:
         'ma', 'ta', 'sa', 'mes', 'tes', 'ses', 'qui', 'que', 'quoi', 'dont'
     ]
 
-# =========================================================
-# VECTORIZER PRINCIPAL
-# =========================================================
-
 class ShifaaVectorizer:
-    """
-    Vectorizer pour texte médical SHIFAAAI
-    
-    Convertit les symptômes en vecteurs numériques pour le ML
-    """
-    
     def __init__(self, 
                  max_features: int = VectorizerConfig.DEFAULT_MAX_FEATURES,
                  ngram_range: tuple = VectorizerConfig.DEFAULT_NGRAM_RANGE,
@@ -55,18 +34,6 @@ class ShifaaVectorizer:
                  vectorizer_type: str = 'tfidf',
                  use_svd: bool = False,
                  svd_components: int = 100):
-        """
-        Initialiser le vectorizer
-        
-        Args:
-            max_features: Nombre maximum de features
-            ngram_range: Plage des n-grams (min, max)
-            min_df: Fréquence minimale des termes
-            max_df: Fréquence maximale des termes
-            vectorizer_type: Type de vectorizer ('tfidf', 'count', 'hashing')
-            use_svd: Utiliser la réduction de dimension SVD
-            svd_components: Nombre de composantes SVD
-        """
         self.max_features = max_features
         self.ngram_range = ngram_range
         self.min_df = min_df
@@ -83,8 +50,6 @@ class ShifaaVectorizer:
         self._create_vectorizer()
     
     def _create_vectorizer(self):
-        """Créer le vectorizer selon le type choisi"""
-        
         common_params = {
             'ngram_range': self.ngram_range,
             'stop_words': VectorizerConfig.MEDICAL_STOPWORDS,
@@ -115,7 +80,6 @@ class ShifaaVectorizer:
         else:
             raise ValueError(f"Type de vectorizer inconnu: {self.vectorizer_type}")
         
-        # SVD pour réduction de dimension
         if self.use_svd:
             self.svd = TruncatedSVD(
                 n_components=self.svd_components,
@@ -123,88 +87,40 @@ class ShifaaVectorizer:
             )
     
     def fit(self, texts: List[str]) -> 'ShifaaVectorizer':
-        """
-        Entraîner le vectorizer sur les données
-        
-        Args:
-            texts: Liste des textes d'entraînement
-            
-        Returns:
-            self pour chaînage
-        """
-        # Nettoyage des textes
         cleaned_texts = [self._clean_text(t) for t in texts]
-        
-        # Fit du vectorizer
         self.vectorizer.fit(cleaned_texts)
         self.is_fitted = True
-        
-        # Récupérer les noms des features (si disponible)
         if hasattr(self.vectorizer, 'get_feature_names_out'):
             self.feature_names = self.vectorizer.get_feature_names_out()
         elif hasattr(self.vectorizer, 'get_feature_names'):
             self.feature_names = self.vectorizer.get_feature_names()
-        
-        # Fit SVD si nécessaire
         if self.use_svd:
             X = self.vectorizer.transform(cleaned_texts)
             self.svd.fit(X)
-        
-        print(f"✅ Vectorizer entraîné: {len(self.feature_names)} features")
+        print(f"Vectorizer trained: {len(self.feature_names)} features")
         
         return self
     
     def transform(self, texts: Union[str, List[str]]) -> np.ndarray:
-        """
-        Transformer les textes en vecteurs
-        
-        Args:
-            texts: Texte ou liste de textes
-            
-        Returns:
-            Matrice de features
-        """
         if not self.is_fitted:
             raise ValueError("Le vectorizer doit d'abord être entraîné")
-        
-        # Convertir en liste si besoin
         if isinstance(texts, str):
             texts = [texts]
-        
-        # Nettoyage
         cleaned_texts = [self._clean_text(t) for t in texts]
-        
-        # Transformation
         X = self.vectorizer.transform(cleaned_texts)
-        
-        # Réduction SVD si nécessaire
         if self.use_svd:
             X = self.svd.transform(X)
         
         return X
     
     def fit_transform(self, texts: List[str]) -> np.ndarray:
-        """Entraîner et transformer en une étape"""
         self.fit(texts)
         return self.transform(texts)
     
     def _clean_text(self, text: str) -> str:
-        """
-        Nettoyer le texte avant vectorisation
-        
-        Args:
-            text: Texte à nettoyer
-            
-        Returns:
-            Texte nettoyé
-        """
         if not isinstance(text, str):
             text = str(text)
-        
-        # Minuscules
         text = text.lower()
-        
-        # Supprimer les accents (version simple)
         replacements = {
             'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
             'à': 'a', 'â': 'a', 'ä': 'a',
@@ -216,27 +132,12 @@ class ShifaaVectorizer:
         for old, new in replacements.items():
             text = text.replace(old, new)
         
-        # Supprimer la ponctuation
         text = re.sub(r'[^\w\s]', ' ', text)
-        
-        # Supprimer les chiffres
         text = re.sub(r'\d+', '', text)
-        
-        # Supprimer les espaces multiples
         text = re.sub(r'\s+', ' ', text)
-        
         return text.strip()
     
     def get_feature_importance(self, top_n: int = 20) -> List[Dict[str, Any]]:
-        """
-        Obtenir l'importance des features
-        
-        Args:
-            top_n: Nombre de features à retourner
-            
-        Returns:
-            Liste des features avec leurs scores
-        """
         if not self.is_fitted:
             return []
         

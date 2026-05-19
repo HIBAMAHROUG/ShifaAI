@@ -1,1 +1,1 @@
-# Prediction controller for SHIFAAAI
+"""Handles prediction orchestration for the Flask backend."""

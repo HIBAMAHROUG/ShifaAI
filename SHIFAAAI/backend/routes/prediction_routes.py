@@ -1,4 +1,4 @@
-# prediction_routes.py - Routes de prédiction pour SHIFAAAI
+"""Defines prediction routes and database-backed result storage."""
 
 from flask import request, jsonify, Blueprint
 import json
@@ -8,18 +8,14 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional
 import re
 
-# =========================================================
-# IMPORTS DES MODULES
-# =========================================================
-
 try:
     from classifier_model import ShifaaClassifier
     from tokenizer_model import MedicalTokenizer
     from parser_model import MedicalTextParser
 except ImportError as e:
-    print(f"⚠️ Erreur d'importation: {e}")
-    print("💡 Utilisation des versions simplifiées")
-    
+    print(f"Import error: {e}")
+    print("Using simplified fallbacks")
+
     class SimpleClassifier:
         def __init__(self):
             self.trained = True
@@ -48,37 +44,26 @@ except ImportError as e:
     MedicalTokenizer = None
     MedicalTextParser = None
 
-# =========================================================
-# CONFIGURATION
-# =========================================================
-
 prediction_bp = Blueprint('prediction', __name__, url_prefix='/api/predict')
 
 DB_PATH = "shifaa.db"
 
-# Initialiser les modèles
 classifier = ShifaaClassifier()
-classifier.load()  # Charger le modèle s'il existe
+classifier.load()
 
 tokenizer = MedicalTokenizer() if MedicalTokenizer else None
 parser = MedicalTextParser() if MedicalTextParser else None
 
-# =========================================================
-# BASE DE DONNÉES
-# =========================================================
-
 def get_db():
-    """Établir une connexion à la base de données"""
     try:
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
         return conn
     except sqlite3.Error as e:
-        print(f"❌ Erreur connexion DB: {e}")
+        print(f"Database connection error: {e}")
         return None
 
 def save_prediction(text: str, result: Dict[str, Any]) -> int:
-    """Sauvegarder une prédiction dans la base de données"""
     conn = get_db()
     if not conn:
         return -1
@@ -86,7 +71,6 @@ def save_prediction(text: str, result: Dict[str, Any]) -> int:
     try:
         cursor = conn.cursor()
         
-        # Créer la table si elle n'existe pas
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS predictions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -115,13 +99,12 @@ def save_prediction(text: str, result: Dict[str, Any]) -> int:
         return cursor.lastrowid
         
     except sqlite3.Error as e:
-        print(f"❌ Erreur sauvegarde: {e}")
+        print(f"Save error: {e}")
         return -1
     finally:
         conn.close()
 
 def get_prediction_history(limit: int = 50) -> List[Dict]:
-    """Récupérer l'historique des prédictions"""
     conn = get_db()
     if not conn:
         return []
@@ -139,25 +122,17 @@ def get_prediction_history(limit: int = 50) -> List[Dict]:
         return [dict(row) for row in rows]
         
     except sqlite3.Error as e:
-        print(f"❌ Erreur historique: {e}")
+        print(f"History error: {e}")
         return []
     finally:
         conn.close()
 
-# =========================================================
-# FONCTIONS UTILITAIRES
-# =========================================================
-
 def preprocess_input(text: str) -> str:
-    """Prétraiter le texte d'entrée"""
-    # Supprimer les espaces multiples
     text = re.sub(r'\s+', ' ', text)
-    # Supprimer la ponctuation excessive
     text = re.sub(r'[^\w\s]', ' ', text)
     return text.strip()
 
 def validate_symptoms(text: str) -> Dict[str, Any]:
-    """Valider et analyser les symptômes d'entrée"""
     if not text or len(text) < 3:
         return {"valid": False, "error": "Texte trop court (minimum 3 caractères)"}
     
@@ -176,17 +151,8 @@ def validate_symptoms(text: str) -> Dict[str, Any]:
     
     return {"valid": True, "detected_keywords": found_keywords}
 
-# =========================================================
-# ROUTES DE PRÉDICTION
-# =========================================================
-
 @prediction_bp.route('/', methods=['POST'])
 def predict():
-    """
-    Prédiction principale
-    POST /api/predict/
-    Body: {"text": "symptômes", "top_n": 3, "save": true}
-    """
     start_time = time.time()
     
     try:
@@ -194,15 +160,11 @@ def predict():
         if not data:
             return jsonify({"error": "No data provided"}), 400
         
-        # Récupérer le texte
         text = data.get('text', '') or data.get('symptoms', '')
         if not text:
             return jsonify({"error": "No symptoms provided"}), 400
         
-        # Prétraiter
         text = preprocess_input(text)
-        
-        # Valider
         validation = validate_symptoms(text)
         if not validation["valid"]:
             return jsonify({
@@ -211,12 +173,9 @@ def predict():
                 "warning": validation.get("warning", False)
             }), 400
         
-        # Paramètres
         top_n = data.get('top_n', 3)
         top_n = min(max(top_n, 1), 5)
         save_result = data.get('save', True)
-        
-        # Prédiction
         predictions = classifier.predict_proba_multiple(text, top_n=top_n)
         main_prediction = predictions[0] if predictions else {"disease": "Non déterminé", "confidence": 0}
         

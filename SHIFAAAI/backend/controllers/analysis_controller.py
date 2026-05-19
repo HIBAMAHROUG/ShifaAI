@@ -1,1 +1,1 @@
-# Analysis controller for SHIFAAAI
+"""Handles analysis orchestration for the Flask backend."""
