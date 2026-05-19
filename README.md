@@ -104,8 +104,7 @@ Prédiction Médicale
                     └──────────┬───────────────┘
                                │
           ┌────────────────────┴────────────────────┐
-          ▼                                         ▼
-
+          ▼                                         
 ┌──────────────────────┐              ┌──────────────────────┐
 │      NLP ENGINE      │              │     SQLITE DATABASE  │
 │ Tokenization         │              │ Users                │
@@ -137,7 +136,6 @@ Prédiction Médicale
 │ Probability Score                               │
 │ Recommendation                                  │
 └──────────────────────────────────────────────────┘
-
 ---
 
 # Technologies Utilisées
