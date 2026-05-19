@@ -4,7 +4,7 @@ ShifaaAI analyzes free-text symptom descriptions and returns likely conditions w
 
 ---
 
-## Architecture (graph)
+## Architecture 
 
 ```mermaid
 flowchart TD
