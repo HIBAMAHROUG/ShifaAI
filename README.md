@@ -85,17 +85,58 @@ Prédiction Médicale
 
 # Architecture du Projet
 
-```text
-Frontend (HTML / CSS / JavaScript)
-                ↓
-API REST Flask
-                ↓
-Couche NLP
-                ↓
-Moteur de Machine Learning
-                ↓
-Base de Données SQLite
-```
+                        ┌─────────────────────┐
+                        │      USER INPUT      │
+                        │  Symptoms in Text    │
+                        └──────────┬──────────┘
+                                   │
+                                   ▼
+                    ┌──────────────────────────┐
+                    │     FRONTEND LAYER       │
+                    │ HTML • CSS • JavaScript  │
+                    │ Bootstrap UI Interface   │
+                    └──────────┬───────────────┘
+                               │ HTTP Requests
+                               ▼
+                    ┌──────────────────────────┐
+                    │      FLASK REST API      │
+                    │  Routing & Controllers   │
+                    └──────────┬───────────────┘
+                               │
+          ┌────────────────────┴────────────────────┐
+          ▼                                         ▼
+
+┌──────────────────────┐              ┌──────────────────────┐
+│      NLP ENGINE      │              │     SQLITE DATABASE  │
+│ Tokenization         │              │ Users                │
+│ Lexical Analysis     │              │ Predictions          │
+│ POS Tagging          │              │ Symptoms History     │
+│ Symptom Extraction   │              │ Medical Dataset      │
+└──────────┬───────────┘              └──────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────┐
+│           FEATURE EXTRACTION LAYER              │
+│ TF-IDF Vectorization                            │
+│ Text Normalization                              │
+│ Numerical Feature Generation                    │
+└──────────────────────┬──────────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────────┐
+│          MACHINE LEARNING ENGINE                │
+│ Multinomial Naive Bayes                         │
+│ Disease Classification                          │
+│ Confidence Score Computation                    │
+└──────────────────────┬──────────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────────┐
+│            AI MEDICAL PREDICTION                │
+│ Predicted Disease                               │
+│ Probability Score                               │
+│ Recommendation                                  │
+└──────────────────────────────────────────────────┘
 
 ---
 
