@@ -260,7 +260,7 @@ Il ne remplace en aucun cas un diagnostic médical professionnel.
 
 # Auteur
 
-Hiba Zaroui  
+Hiba Mahroug   
 Étudiante en Génie Logiciel  
 Passionnée par l’IA et le NLP
 
